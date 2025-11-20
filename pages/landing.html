@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CookBook by Atharva - Your Personal Recipe Collection</title>
+    <link rel="icon" href="../assets/images/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1>🍳 CookBook by Atharva</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="landing.html" class="nav-link active">Home</a></li>
+                <li><a href="add-recipe.html" class="nav-link">Add Recipe</a></li>
+                <li><a href="meal-plan.html" class="nav-link">Meal Plan</a></li>
+                <li><a href="shopping-list.html" class="nav-link">Shopping List</a></li>
+                <li><a href="#" class="nav-link" onclick="openImportModal()">Import</a></li>
+                <li><a href="#" class="nav-link" onclick="exportAllRecipes()">Export</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Atharva's Kitchen</h2>
+            <p>Discover, manage, and share your favorite recipes</p>
+        </section>
+
+        <section class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search recipes by title..." />
+            </div>
+            <div class="filter-group">
+                <label for="categoryFilter">Category:</label>
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="Vegetarian">Vegetarian</option>
+                    <option value="Vegan">Vegan</option>
+                    <option value="Non-Vegetarian">Non-Vegetarian</option>
+                    <option value="Dessert">Dessert</option>
+                    <option value="Breakfast">Breakfast</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="difficultyFilter">Difficulty:</label>
+                <select id="difficultyFilter">
+                    <option value="">All Levels</option>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="prepTimeFilter">Max Prep Time (mins):</label>
+                <input type="number" id="prepTimeFilter" placeholder="e.g., 30" min="0" />
+            </div>
+            <div class="filter-group">
+                <label for="favoriteFilter">
+                    <input type="checkbox" id="favoriteFilter" />
+                    Favorites Only
+                </label>
+            </div>
+            <button id="resetFilters" class="btn btn-secondary">Reset Filters</button>
+        </section>
+
+        <div id="errorContainer" class="error-message" style="display: none;"></div>
+        <div id="successContainer" class="success-message" style="display: none;"></div>
+
+        <section id="recipesGrid" class="recipes-grid">
+            <!-- Recipe cards will be dynamically inserted here -->
+        </section>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <h3>No recipes found</h3>
+            <p>Try adjusting your search or filters, or <a href="pages/add-recipe.html">add a new recipe</a></p>
+        </div>
+    </main>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeImportModal()">&times;</span>
+            <h2>Import Recipes</h2>
+            <p>Select a JSON file to import recipes:</p>
+            <input type="file" id="importFile" accept=".json" />
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="handleImport()">Import</button>
+                <button class="btn btn-secondary" onclick="closeImportModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Recipe Manager. Built with love for cooking enthusiasts.</p>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>
