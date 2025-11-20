@@ -11,29 +11,6 @@ A fully functional, browser-based recipe management application built with vanil
 
 No installation, npm packages, or server setup required. Everything runs directly in your browser.
 
-### Browser Compatibility
-- Chrome/Chromium 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-- Modern mobile browsers (iOS Safari, Chrome Mobile)
-
-### File Structure
-recipe-manager/
-├── index.html # Home page - Recipe list with search/filter
-├── pages/
-│ ├── recipe-detail.html # Recipe detail view with QR code
-│ ├── add-recipe.html # Add/Edit recipe form
-│ ├── meal-plan.html # Weekly meal planner
-│ └── shopping-list.html # Shopping list manager
-├── assets/
-│ ├── css/
-│ │ └── main.css # Complete responsive styling
-│ └── js/
-│ └── main.js # All JavaScript functionality in single file
-└── README.md # This file
-
-
 ## 🌟 Unique Features Implemented
 
 ### 🎯 Advanced Recipe Management
@@ -79,7 +56,7 @@ recipe-manager/
 {
   "id": 1700000000000.123,
   "title": "Veg Biryani",
-  "description": "A aromatic and flavorful vegetarian rice dish with layered vegetables and fragrant spices.",
+  "description": "An aromatic and flavorful vegetarian rice dish with layered vegetables and fragrant spices.",
   "category": "Vegetarian",
   "tags": ["indian", "spicy", "rice", "vegetarian"],
   "prepTime": 30,
@@ -109,6 +86,7 @@ recipe-manager/
   "createdAt": "2024-11-20T10:30:00.000Z",
   "updatedAt": "2024-11-20T10:30:00.000Z"
 }
+```
 
 ### Field Descriptions
 | Field | Type | Description | Required |
@@ -203,6 +181,6 @@ recipe-manager/
 
 - **HTML5** - Semantic markup
 - **CSS3** - Flexbox layout, responsive design, custom properties
-- **Vanilla JavaScript** - No frameworks or libraries
+- **JavaScript** - No frameworks or libraries
 - **localStorage API** - Client-side data persistence
 - **Online Images** - External image URLs (Placeholder images included)
