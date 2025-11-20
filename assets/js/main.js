@@ -965,9 +965,11 @@ function clearShoppingList() {
 function generateQRCode(recipeId) {
   const modal = document.getElementById("qrModal")
   const qrCodeDiv = document.getElementById("qrCode")
+  const timerDiv = document.getElementById("qrTimer")
   if (!modal || !qrCodeDiv) return
 
   qrCodeDiv.innerHTML = ""
+  if (timerDiv) timerDiv.innerHTML = ""
 
   const recipeData = JSON.stringify({ recipeId, app: "RecipeManager" })
   const encodedData = btoa(recipeData)
@@ -987,6 +989,24 @@ function generateQRCode(recipeId) {
       correctLevel: QRCode.CorrectLevel.H,
     })
   }
+
+  let timeRemaining = 30
+  if (timerDiv) {
+    timerDiv.textContent = `Scanner will disappear in ${timeRemaining}s`
+  }
+
+  const timerInterval = setInterval(() => {
+    timeRemaining--
+    if (timerDiv) {
+      timerDiv.textContent = `Scanner will disappear in ${timeRemaining}s`
+    }
+
+    if (timeRemaining <= 0) {
+      clearInterval(timerInterval)
+      closeQRModal()
+      showSuccess("QR code scanner closed")
+    }
+  }, 1000)
 
   modal.style.display = "flex"
 }
