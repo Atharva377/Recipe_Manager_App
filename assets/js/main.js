@@ -4,6 +4,8 @@
 // ==================== CONSTANTS ====================
 const STORAGE_KEY = "recipes"
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=300&fit=crop"
+const MEAL_PLAN_STORAGE_KEY = "mealPlan"
+const SHOPPING_LIST_STORAGE_KEY = "shoppingList"
 
 // Initial recipe data - Veg Biryani
 const DEFAULT_RECIPE = {
@@ -15,6 +17,8 @@ const DEFAULT_RECIPE = {
   cookTime: 45,
   servings: 4,
   difficulty: "Medium",
+  category: "Vegetarian",
+  tags: ["indian", "spicy", "rice", "vegetarian"],
   imageUrl: "https://images.unsplash.com/photo-1626082927389-6cd097cda666?w=500&h=300&fit=crop",
   ingredients: [
     "2 cups basmati rice",
@@ -57,6 +61,14 @@ const DEFAULT_RECIPE = {
     "Carefully open the lid and gently mix the biryani with a fork.",
     "Transfer to a serving dish and garnish with fried onions, boiled eggs, and fresh mint.",
   ],
+  rating: 0,
+  isFavorite: false,
+  nutrition: {
+    calories: 350,
+    protein: 12,
+    carbs: 45,
+    fat: 14,
+  },
   createdAt: new Date().toISOString(),
 }
 
@@ -75,6 +87,22 @@ function initializeStorage() {
   } catch (error) {
     console.error("Error initializing storage:", error)
     showError("Failed to initialize storage. Please clear browser data and try again.")
+  }
+}
+
+/**
+ * Initialize meal plan and shopping list storage
+ */
+function initializeMealPlanStorage() {
+  try {
+    if (!localStorage.getItem(MEAL_PLAN_STORAGE_KEY)) {
+      localStorage.setItem(MEAL_PLAN_STORAGE_KEY, JSON.stringify({}))
+    }
+    if (!localStorage.getItem(SHOPPING_LIST_STORAGE_KEY)) {
+      localStorage.setItem(SHOPPING_LIST_STORAGE_KEY, JSON.stringify({}))
+    }
+  } catch (error) {
+    console.error("Error initializing meal plan storage:", error)
   }
 }
 
@@ -163,6 +191,32 @@ function formatTime(minutes) {
   return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`
 }
 
+/**
+ * Escape HTML to prevent XSS
+ */
+function escapeHtml(text) {
+  const map = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
+  }
+  return text.replace(/[&<>"']/g, (m) => map[m])
+}
+
+/**
+ * Check if URL is valid
+ */
+function isValidUrl(string) {
+  try {
+    new URL(string)
+    return true
+  } catch (_) {
+    return false
+  }
+}
+
 // ==================== HOME PAGE FUNCTIONALITY ====================
 
 /**
@@ -178,12 +232,12 @@ function renderRecipes(recipes) {
 
   if (recipes.length === 0) {
     grid.style.display = "none"
-    emptyState.style.display = "block"
+    if (emptyState) emptyState.style.display = "block"
     return
   }
 
   grid.style.display = "grid"
-  emptyState.style.display = "none"
+  if (emptyState) emptyState.style.display = "none"
 
   recipes.forEach((recipe) => {
     const card = createRecipeCard(recipe)
@@ -200,40 +254,42 @@ function createRecipeCard(recipe) {
 
   const totalTime = recipe.prepTime + recipe.cookTime
   const imageUrl = recipe.imageUrl || DEFAULT_IMAGE
+  const tagsHtml = (recipe.tags || [])
+    .slice(0, 3)
+    .map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`)
+    .join("")
+  const ratingDisplay = recipe.rating ? `⭐ ${recipe.rating}/5` : "Not rated"
 
   card.innerHTML = `
-        <img src="${imageUrl}" alt="${recipe.title}" class="recipe-card-image" onerror="this.src='${DEFAULT_IMAGE}'">
-        <div class="recipe-card-content">
-            <h3 class="recipe-card-title">${escapeHtml(recipe.title)}</h3>
-            <div class="recipe-card-meta">
-                <div class="recipe-meta-item">⏱️ ${formatTime(totalTime)}</div>
-                <div class="recipe-meta-item">👥 ${recipe.servings}</div>
-            </div>
-            <span class="difficulty-badge ${getDifficultyClass(recipe.difficulty)}">${recipe.difficulty}</span>
-            <p class="recipe-card-description">${escapeHtml(recipe.description || "A delicious recipe")}</p>
-            <div class="recipe-card-actions">
-                <button class="btn btn-primary btn-small" onclick="viewRecipe(${recipe.id})">View</button>
-                <button class="btn btn-secondary btn-small" onclick="editRecipe(${recipe.id})">Edit</button>
-                <button class="btn btn-danger btn-small" onclick="deleteRecipe(${recipe.id})">Delete</button>
-            </div>
+    <img src="${imageUrl}" alt="${recipe.title}" class="recipe-card-image" onerror="this.src='${DEFAULT_IMAGE}'">
+    <div class="recipe-card-content">
+      <div style="display: flex; justify-content: space-between; align-items: start;">
+        <div>
+          <h3 class="recipe-card-title">${escapeHtml(recipe.title)}</h3>
+          <div class="tags-container">${tagsHtml}</div>
         </div>
-    `
+        <button class="favorite-btn ${recipe.isFavorite ? "active" : ""}" data-favorite-btn="${recipe.id}" onclick="event.stopPropagation(); toggleFavorite(${recipe.id})" title="Add to favorites">
+          ${recipe.isFavorite ? "❤️" : "🤍"}
+        </button>
+      </div>
+      <div class="recipe-card-meta">
+        <div class="recipe-meta-item">⏱️ ${formatTime(totalTime)}</div>
+        <div class="recipe-meta-item">👥 ${recipe.servings}</div>
+        <div class="recipe-meta-item">${ratingDisplay}</div>
+      </div>
+      <span class="difficulty-badge ${getDifficultyClass(recipe.difficulty)}">${recipe.difficulty}</span>
+      <span class="difficulty-badge" style="background-color: #dbeafe; color: #1e40af;">${recipe.category || "Uncategorized"}</span>
+      <p class="recipe-card-description">${escapeHtml(recipe.description || "A delicious recipe")}</p>
+      <div class="recipe-card-actions">
+        <button class="btn btn-primary btn-small" onclick="viewRecipe(${recipe.id})">View</button>
+        <button class="btn btn-secondary btn-small" onclick="editRecipe(${recipe.id})">Edit</button>
+        <button class="btn btn-secondary btn-small" onclick="duplicateRecipe(${recipe.id})">Duplicate</button>
+        <button class="btn btn-danger btn-small" onclick="deleteRecipe(${recipe.id})">Delete</button>
+      </div>
+    </div>
+  `
 
   return card
-}
-
-/**
- * Escape HTML to prevent XSS
- */
-function escapeHtml(text) {
-  const map = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  }
-  return text.replace(/[&<>"']/g, (m) => map[m])
 }
 
 /**
@@ -242,7 +298,9 @@ function escapeHtml(text) {
 function filterRecipes() {
   const searchTerm = document.getElementById("searchInput")?.value.toLowerCase() || ""
   const difficulty = document.getElementById("difficultyFilter")?.value || ""
+  const category = document.getElementById("categoryFilter")?.value || ""
   const maxPrepTime = Number.parseInt(document.getElementById("prepTimeFilter")?.value) || Number.POSITIVE_INFINITY
+  const favoritesOnly = document.getElementById("favoriteFilter")?.checked || false
 
   let recipes = loadRecipes()
 
@@ -251,9 +309,11 @@ function filterRecipes() {
       recipe.title.toLowerCase().includes(searchTerm) ||
       (recipe.description && recipe.description.toLowerCase().includes(searchTerm))
     const matchesDifficulty = !difficulty || recipe.difficulty === difficulty
+    const matchesCategory = !category || recipe.category === category
     const matchesTime = recipe.prepTime <= maxPrepTime
+    const matchesFavorite = !favoritesOnly || recipe.isFavorite
 
-    return matchesSearch && matchesDifficulty && matchesTime
+    return matchesSearch && matchesDifficulty && matchesCategory && matchesTime && matchesFavorite
   })
 
   renderRecipes(recipes)
@@ -265,11 +325,15 @@ function filterRecipes() {
 function resetFilters() {
   const searchInput = document.getElementById("searchInput")
   const difficultyFilter = document.getElementById("difficultyFilter")
+  const categoryFilter = document.getElementById("categoryFilter")
   const prepTimeFilter = document.getElementById("prepTimeFilter")
+  const favoriteFilter = document.getElementById("favoriteFilter")
 
   if (searchInput) searchInput.value = ""
   if (difficultyFilter) difficultyFilter.value = ""
+  if (categoryFilter) categoryFilter.value = ""
   if (prepTimeFilter) prepTimeFilter.value = ""
+  if (favoriteFilter) favoriteFilter.checked = false
 
   filterRecipes()
 }
@@ -278,7 +342,6 @@ function resetFilters() {
  * View recipe details
  */
 function viewRecipe(recipeId) {
-  // Store the ID in sessionStorage for the detail page
   sessionStorage.setItem("selectedRecipeId", recipeId)
   window.location.href = "pages/recipe-detail.html"
 }
@@ -310,6 +373,33 @@ function deleteRecipe(recipeId) {
   }
 }
 
+/**
+ * Duplicate recipe
+ */
+function duplicateRecipe(recipeId) {
+  const recipes = loadRecipes()
+  const recipe = recipes.find((r) => r.id === recipeId)
+
+  if (!recipe) {
+    showError("Recipe not found.")
+    return
+  }
+
+  const duplicatedRecipe = {
+    ...recipe,
+    id: generateId(),
+    title: `${recipe.title} (Copy)`,
+    createdAt: new Date().toISOString(),
+    isFavorite: false,
+    rating: 0,
+  }
+
+  recipes.push(duplicatedRecipe)
+  saveRecipes(recipes)
+  showSuccess(`Recipe "${recipe.title}" duplicated successfully!`)
+  filterRecipes()
+}
+
 // ==================== RECIPE DETAIL PAGE FUNCTIONALITY ====================
 
 /**
@@ -331,57 +421,88 @@ function loadRecipeDetail() {
 
   const imageUrl = recipe.imageUrl || DEFAULT_IMAGE
   const totalTime = recipe.prepTime + recipe.cookTime
+  const tagsHtml = (recipe.tags || []).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")
+
+  const nutritionHtml = recipe.nutrition
+    ? `
+    <div class="nutrition-box">
+      <div class="nutrition-item">
+        <div class="nutrition-item-label">Calories</div>
+        <div class="nutrition-item-value">${recipe.nutrition.calories || "—"}</div>
+      </div>
+      <div class="nutrition-item">
+        <div class="nutrition-item-label">Protein</div>
+        <div class="nutrition-item-value">${recipe.nutrition.protein || "—"}g</div>
+      </div>
+      <div class="nutrition-item">
+        <div class="nutrition-item-label">Carbs</div>
+        <div class="nutrition-item-value">${recipe.nutrition.carbs || "—"}g</div>
+      </div>
+      <div class="nutrition-item">
+        <div class="nutrition-item-label">Fat</div>
+        <div class="nutrition-item-value">${recipe.nutrition.fat || "—"}g</div>
+      </div>
+    </div>
+  `
+    : ""
 
   const stepsHtml = recipe.steps.map((step, index) => `<li data-step="${index + 1}">${escapeHtml(step)}</li>`).join("")
-
   const ingredientsHtml = recipe.ingredients.map((ingredient) => `<li>✓ ${escapeHtml(ingredient)}</li>`).join("")
 
   detailContainer.innerHTML = `
-        <div class="recipe-detail-header">
-            <img src="${imageUrl}" alt="${recipe.title}" class="recipe-detail-image" onerror="this.src='${DEFAULT_IMAGE}'">
-            <div class="recipe-detail-overlay">
-                <h1 class="recipe-detail-title">${escapeHtml(recipe.title)}</h1>
-                <div class="recipe-detail-meta">
-                    <div>⏱️ Total Time: ${formatTime(totalTime)}</div>
-                    <div>👥 Servings: ${recipe.servings}</div>
-                    <div>📊 Level: <span class="difficulty-badge ${getDifficultyClass(recipe.difficulty)}">${recipe.difficulty}</span></div>
-                </div>
-            </div>
+    <div class="recipe-detail-header">
+      <img src="${imageUrl}" alt="${recipe.title}" class="recipe-detail-image" onerror="this.src='${DEFAULT_IMAGE}'">
+      <div class="recipe-detail-overlay">
+        <h1 class="recipe-detail-title">${escapeHtml(recipe.title)}</h1>
+        <div class="recipe-detail-meta">
+          <div>⏱️ Total Time: ${formatTime(totalTime)}</div>
+          <div>👥 Servings: ${recipe.servings}</div>
+          <div>📊 Level: <span class="difficulty-badge ${getDifficultyClass(recipe.difficulty)}">${recipe.difficulty}</span></div>
+          ${recipe.category ? `<div>🏷️ Category: ${escapeHtml(recipe.category)}</div>` : ""}
         </div>
+      </div>
+    </div>
 
-        <div class="recipe-detail-content">
-            ${
-              recipe.description
-                ? `
-                <div class="recipe-detail-section">
-                    <p class="recipe-detail-description">${escapeHtml(recipe.description)}</p>
-                </div>
-            `
-                : ""
-            }
+    <div class="recipe-detail-content">
+      ${recipe.description ? `<div class="recipe-detail-section"><p class="recipe-detail-description">${escapeHtml(recipe.description)}</p></div>` : ""}
 
-            <div class="recipe-detail-section">
-                <h3>Ingredients</h3>
-                <ul class="ingredients-list">
-                    ${ingredientsHtml}
-                </ul>
-            </div>
+      ${tagsHtml ? `<div class="recipe-detail-section"><strong>Tags:</strong><div class="tags-container">${tagsHtml}</div></div>` : ""}
 
-            <div class="recipe-detail-section">
-                <h3>Cooking Steps</h3>
-                <ol class="steps-list">
-                    ${stepsHtml}
-                </ol>
-            </div>
+      <div class="recipe-detail-section">
+        <div id="recipeRating"></div>
+        <button class="favorite-btn ${recipe.isFavorite ? "active" : ""}" onclick="toggleFavorite(${recipe.id}); this.classList.toggle('active');">
+          ${recipe.isFavorite ? "❤️ Favorited" : "🤍 Add to Favorites"}
+        </button>
+      </div>
 
-            <div class="recipe-detail-actions">
-                <a href="../index.html" class="btn btn-secondary">Back to Recipes</a>
-                <button class="btn btn-primary" onclick="goToEdit(${recipeId})">Edit Recipe</button>
-                <button class="btn btn-danger" onclick="deleteAndReturn(${recipeId})">Delete Recipe</button>
-            </div>
-        </div>
-    `
+      ${nutritionHtml}
 
+      <div class="recipe-detail-section">
+        <h3>Ingredients</h3>
+        <ul class="ingredients-list">
+          ${ingredientsHtml}
+        </ul>
+      </div>
+
+      <div class="recipe-detail-section">
+        <h3>Cooking Steps</h3>
+        <ol class="steps-list">
+          ${stepsHtml}
+        </ol>
+      </div>
+
+      <div class="recipe-detail-actions">
+        <a href="../index.html" class="btn btn-secondary">Back to Recipes</a>
+        <button class="btn btn-primary" onclick="goToEdit(${recipeId})">Edit Recipe</button>
+        <button class="btn btn-secondary" onclick="generateQRCode(${recipeId})">Share QR Code</button>
+        <button class="btn btn-secondary" onclick="duplicateRecipe(${recipeId})">Duplicate Recipe</button>
+        <button class="btn btn-danger" onclick="deleteAndReturn(${recipeId})">Delete Recipe</button>
+        <button class="btn btn-secondary" onclick="window.print()">🖨️ Print</button>
+      </div>
+    </div>
+  `
+
+  displayRecipeRating(recipe)
   sessionStorage.removeItem("selectedRecipeId")
 }
 
@@ -443,6 +564,8 @@ function initializeForm() {
 function populateForm(recipe) {
   document.getElementById("title").value = recipe.title
   document.getElementById("description").value = recipe.description || ""
+  document.getElementById("category").value = recipe.category || ""
+  document.getElementById("tags").value = (recipe.tags || []).join(", ")
   document.getElementById("prepTime").value = recipe.prepTime
   document.getElementById("cookTime").value = recipe.cookTime
   document.getElementById("servings").value = recipe.servings
@@ -450,6 +573,13 @@ function populateForm(recipe) {
   document.getElementById("imageUrl").value = recipe.imageUrl || ""
   document.getElementById("ingredients").value = recipe.ingredients.join("\n")
   document.getElementById("steps").value = recipe.steps.join("\n")
+
+  if (recipe.nutrition) {
+    document.getElementById("calories").value = recipe.nutrition.calories || ""
+    document.getElementById("protein").value = recipe.nutrition.protein || ""
+    document.getElementById("carbs").value = recipe.nutrition.carbs || ""
+    document.getElementById("fat").value = recipe.nutrition.fat || ""
+  }
 }
 
 /**
@@ -464,6 +594,10 @@ function validateForm(formData) {
 
   if (formData.title.length > 200) {
     errors.push("Recipe title must be less than 200 characters.")
+  }
+
+  if (!formData.category) {
+    errors.push("Recipe category is required.")
   }
 
   if (formData.prepTime < 0 || isNaN(formData.prepTime)) {
@@ -498,18 +632,6 @@ function validateForm(formData) {
 }
 
 /**
- * Check if URL is valid
- */
-function isValidUrl(string) {
-  try {
-    new URL(string)
-    return true
-  } catch (_) {
-    return false
-  }
-}
-
-/**
  * Handle form submission
  */
 function handleFormSubmit(e) {
@@ -518,6 +640,12 @@ function handleFormSubmit(e) {
   const formData = {
     title: document.getElementById("title").value.trim(),
     description: document.getElementById("description").value.trim(),
+    category: document.getElementById("category").value,
+    tags: document
+      .getElementById("tags")
+      .value.split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0),
     prepTime: Number.parseInt(document.getElementById("prepTime").value),
     cookTime: Number.parseInt(document.getElementById("cookTime").value),
     servings: Number.parseInt(document.getElementById("servings").value),
@@ -533,9 +661,14 @@ function handleFormSubmit(e) {
       .value.split("\n")
       .map((s) => s.trim())
       .filter((s) => s.length > 0),
+    nutrition: {
+      calories: Number.parseInt(document.getElementById("calories").value) || 0,
+      protein: Number.parseFloat(document.getElementById("protein").value) || 0,
+      carbs: Number.parseFloat(document.getElementById("carbs").value) || 0,
+      fat: Number.parseFloat(document.getElementById("fat").value) || 0,
+    },
   }
 
-  // Validate form
   const errors = validateForm(formData)
   if (errors.length > 0) {
     showError(errors.join(" "))
@@ -547,7 +680,6 @@ function handleFormSubmit(e) {
     const editRecipeId = sessionStorage.getItem("editRecipeId")
 
     if (editRecipeId) {
-      // Update existing recipe
       const index = recipes.findIndex((r) => r.id == editRecipeId)
       if (index !== -1) {
         recipes[index] = {
@@ -559,10 +691,11 @@ function handleFormSubmit(e) {
       }
       sessionStorage.removeItem("editRecipeId")
     } else {
-      // Create new recipe
       const newRecipe = {
         id: generateId(),
         ...formData,
+        isFavorite: false,
+        rating: 0,
         createdAt: new Date().toISOString(),
       }
       recipes.push(newRecipe)
@@ -570,8 +703,6 @@ function handleFormSubmit(e) {
     }
 
     saveRecipes(recipes)
-
-    // Reset form and redirect after 1.5 seconds
     setTimeout(() => {
       window.location.href = "../index.html"
     }, 1500)
@@ -580,45 +711,536 @@ function handleFormSubmit(e) {
   }
 }
 
+// ==================== FAVORITES AND RATINGS ====================
+
+/**
+ * Toggle favorite status
+ */
+function toggleFavorite(recipeId) {
+  const recipes = loadRecipes()
+  const recipe = recipes.find((r) => r.id === recipeId)
+  if (recipe) {
+    recipe.isFavorite = !recipe.isFavorite
+    saveRecipes(recipes)
+    const btn = document.querySelector(`[data-favorite-btn="${recipeId}"]`)
+    if (btn) {
+      btn.classList.toggle("active")
+      btn.textContent = recipe.isFavorite ? "❤️ Favorited" : "🤍 Add to Favorites"
+    }
+    showSuccess(recipe.isFavorite ? "Added to favorites!" : "Removed from favorites!")
+  }
+}
+
+/**
+ * Set recipe rating
+ */
+function setRating(recipeId, rating) {
+  const recipes = loadRecipes()
+  const recipe = recipes.find((r) => r.id === recipeId)
+  if (recipe) {
+    recipe.rating = rating
+    saveRecipes(recipes)
+    displayRecipeRating(recipe)
+    showSuccess(`Recipe rated ${rating} stars!`)
+  }
+}
+
+/**
+ * Display recipe rating UI
+ */
+function displayRecipeRating(recipe) {
+  const ratingContainer = document.getElementById("recipeRating")
+  if (!ratingContainer) return
+
+  let html = '<div class="recipe-rating"><strong>Your Rating:</strong>'
+  for (let i = 1; i <= 5; i++) {
+    html += `<span class="star ${i <= recipe.rating ? "active" : ""}" onclick="setRating(${recipe.id}, ${i})">★</span>`
+  }
+  html += "</div>"
+  ratingContainer.innerHTML = html
+}
+
+// ==================== EXPORT/IMPORT FUNCTIONALITY ====================
+
+/**
+ * Export all recipes as JSON
+ */
+function exportAllRecipes() {
+  const recipes = loadRecipes()
+  const dataStr = JSON.stringify(recipes, null, 2)
+  const dataBlob = new Blob([dataStr], { type: "application/json" })
+  const url = URL.createObjectURL(dataBlob)
+  const link = document.createElement("a")
+  link.href = url
+  link.download = `recipes-backup-${new Date().toISOString().slice(0, 10)}.json`
+  link.click()
+  URL.revokeObjectURL(url)
+  showSuccess("Recipes exported successfully!")
+}
+
+/**
+ * Open import modal
+ */
+function openImportModal() {
+  const modal = document.getElementById("importModal")
+  if (modal) modal.style.display = "flex"
+}
+
+/**
+ * Close import modal
+ */
+function closeImportModal() {
+  const modal = document.getElementById("importModal")
+  if (modal) modal.style.display = "none"
+}
+
+/**
+ * Handle recipe import
+ */
+function handleImport() {
+  const fileInput = document.getElementById("importFile")
+  const file = fileInput.files[0]
+
+  if (!file) {
+    showError("Please select a file to import.")
+    return
+  }
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    try {
+      const importedRecipes = JSON.parse(e.target.result)
+      if (!Array.isArray(importedRecipes)) {
+        showError("Invalid file format. Expected an array of recipes.")
+        return
+      }
+
+      const currentRecipes = loadRecipes()
+      const mergedRecipes = [...currentRecipes, ...importedRecipes].filter(
+        (recipe, index, self) => index === self.findIndex((r) => r.id === recipe.id),
+      )
+      saveRecipes(mergedRecipes)
+      showSuccess(`Successfully imported ${importedRecipes.length} recipes!`)
+      closeImportModal()
+      fileInput.value = ""
+      setTimeout(() => {
+        window.location.href = "index.html"
+      }, 1500)
+    } catch (error) {
+      showError("Error parsing JSON file. Please check the file format.")
+    }
+  }
+  reader.readAsText(file)
+}
+
+// ==================== SHOPPING LIST FUNCTIONALITY ====================
+
+/**
+ * Generate shopping list from recipes
+ */
+function getShoppingListFromRecipes(recipeIds) {
+  const recipes = loadRecipes()
+  const shoppingList = {}
+
+  recipeIds.forEach((id) => {
+    const recipe = recipes.find((r) => r.id == id)
+    if (recipe) {
+      recipe.ingredients.forEach((ingredient) => {
+        if (!shoppingList[ingredient]) {
+          shoppingList[ingredient] = 0
+        }
+        shoppingList[ingredient]++
+      })
+    }
+  })
+
+  return shoppingList
+}
+
+/**
+ * Save shopping list to storage
+ */
+function saveShoppingList(list) {
+  try {
+    localStorage.setItem(SHOPPING_LIST_STORAGE_KEY, JSON.stringify(list))
+  } catch (error) {
+    console.error("Error saving shopping list:", error)
+    showError("Failed to save shopping list.")
+  }
+}
+
+/**
+ * Load shopping list from storage
+ */
+function loadShoppingList() {
+  try {
+    const list = localStorage.getItem(SHOPPING_LIST_STORAGE_KEY)
+    return list ? JSON.parse(list) : {}
+  } catch (error) {
+    console.error("Error loading shopping list:", error)
+    return {}
+  }
+}
+
+/**
+ * Display shopping list
+ */
+function displayShoppingList() {
+  const container = document.getElementById("shoppingListContainer")
+  if (!container) return
+
+  const shoppingList = loadShoppingList()
+  if (Object.keys(shoppingList).length === 0) {
+    container.innerHTML =
+      '<p style="text-align: center; color: #999;">No items in shopping list. <a href="../index.html">Add recipes to your meal plan</a></p>'
+    return
+  }
+
+  let html = '<div class="shopping-list-section"><h3>Shopping List</h3>'
+  Object.entries(shoppingList).forEach(([item, quantity]) => {
+    html += `
+      <div class="shopping-item">
+        <input type="checkbox" onchange="this.parentElement.classList.toggle('checked')">
+        <span class="shopping-item-text">${escapeHtml(item)}</span>
+        <span class="shopping-item-quantity">x${quantity}</span>
+        <button class="btn btn-sm btn-secondary" onclick="removeShoppingItem('${item.replace(/'/g, "\\'")}')">Remove</button>
+      </div>
+    `
+  })
+  html += "</div>"
+  container.innerHTML = html
+}
+
+/**
+ * Remove shopping item
+ */
+function removeShoppingItem(item) {
+  const list = loadShoppingList()
+  delete list[item]
+  saveShoppingList(list)
+  displayShoppingList()
+}
+
+/**
+ * Print shopping list
+ */
+function printShoppingList() {
+  window.print()
+}
+
+/**
+ * Download shopping list
+ */
+function downloadShoppingList() {
+  const list = loadShoppingList()
+  const text = Object.entries(list)
+    .map(([item, qty]) => `☐ ${item} (x${qty})`)
+    .join("\n")
+  const blob = new Blob([text], { type: "text/plain" })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.download = `shopping-list-${new Date().toISOString().slice(0, 10)}.txt`
+  link.click()
+  URL.revokeObjectURL(url)
+  showSuccess("Shopping list downloaded!")
+}
+
+/**
+ * Clear shopping list
+ */
+function clearShoppingList() {
+  if (confirm("Clear all items from shopping list?")) {
+    saveShoppingList({})
+    displayShoppingList()
+    showSuccess("Shopping list cleared!")
+  }
+}
+
+// ==================== QR CODE FUNCTIONALITY ====================
+
+/**
+ * Generate QR code for recipe
+ */
+function generateQRCode(recipeId) {
+  const modal = document.getElementById("qrModal")
+  const qrCodeDiv = document.getElementById("qrCode")
+  if (!modal || !qrCodeDiv) return
+
+  qrCodeDiv.innerHTML = ""
+
+  const recipeData = JSON.stringify({ recipeId, app: "RecipeManager" })
+  const encodedData = btoa(recipeData)
+  const baseUrl = window.location.origin + window.location.pathname.replace(/[^/]*$/, "")
+  const qrUrl = `${baseUrl}?recipe=${encodedData}`
+
+  // Declare QRCode variable before using it
+  const QRCode = window.QRCode
+
+  if (typeof QRCode !== "undefined") {
+    new QRCode(qrCodeDiv, {
+      text: qrUrl,
+      width: 250,
+      height: 250,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H,
+    })
+  }
+
+  modal.style.display = "flex"
+}
+
+/**
+ * Close QR modal
+ */
+function closeQRModal() {
+  const modal = document.getElementById("qrModal")
+  if (modal) modal.style.display = "none"
+}
+
+// ==================== MEAL PLANNING FUNCTIONALITY ====================
+
+/**
+ * Get current week start date
+ */
+function getCurrentWeekStart() {
+  const now = new Date()
+  const day = now.getDay()
+  const diff = now.getDate() - day + (day === 0 ? -6 : 1)
+  return new Date(now.setDate(diff))
+}
+
+/**
+ * Save meal plan to storage
+ */
+function saveMealPlan(weekStart, meals) {
+  try {
+    const mealPlans = JSON.parse(localStorage.getItem(MEAL_PLAN_STORAGE_KEY) || "{}")
+    const weekKey = weekStart.toISOString().slice(0, 10)
+    mealPlans[weekKey] = meals
+    localStorage.setItem(MEAL_PLAN_STORAGE_KEY, JSON.stringify(mealPlans))
+  } catch (error) {
+    console.error("Error saving meal plan:", error)
+    showError("Failed to save meal plan.")
+  }
+}
+
+/**
+ * Load meal plan from storage
+ */
+function loadMealPlan(weekStart) {
+  try {
+    const mealPlans = JSON.parse(localStorage.getItem(MEAL_PLAN_STORAGE_KEY) || "{}")
+    const weekKey = weekStart.toISOString().slice(0, 10)
+    return (
+      mealPlans[weekKey] || {
+        Monday: { breakfast: null, lunch: null, dinner: null },
+        Tuesday: { breakfast: null, lunch: null, dinner: null },
+        Wednesday: { breakfast: null, lunch: null, dinner: null },
+        Thursday: { breakfast: null, lunch: null, dinner: null },
+        Friday: { breakfast: null, lunch: null, dinner: null },
+        Saturday: { breakfast: null, lunch: null, dinner: null },
+        Sunday: { breakfast: null, lunch: null, dinner: null },
+      }
+    )
+  } catch (error) {
+    console.error("Error loading meal plan:", error)
+    return {}
+  }
+}
+
+/**
+ * Display meal plan for week
+ */
+function displayMealPlan(weekStart) {
+  const grid = document.getElementById("mealPlanGrid")
+  const weekDisplay = document.getElementById("weekDisplay")
+  if (!grid) return
+
+  const meals = loadMealPlan(weekStart)
+  const weekEnd = new Date(weekStart)
+  weekEnd.setDate(weekEnd.getDate() + 6)
+
+  if (weekDisplay) {
+    weekDisplay.textContent = `${weekStart.toLocaleDateString()} - ${weekEnd.toLocaleDateString()}`
+  }
+
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+  grid.innerHTML = ""
+
+  days.forEach((day, index) => {
+    const dayDate = new Date(weekStart)
+    dayDate.setDate(dayDate.getDate() + index)
+    const dayMeals = meals[day] || { breakfast: null, lunch: null, dinner: null }
+
+    let html = `
+      <div class="meal-day-card">
+        <div class="meal-day-header">${day}<br><small>${dayDate.toLocaleDateString()}</small></div>
+        <div class="meal-day-body">
+    `
+    ;["breakfast", "lunch", "dinner"].forEach((mealType) => {
+      const recipe = dayMeals[mealType]
+      html += `
+        <div class="meal-slot">
+          <div class="meal-slot-label">${mealType}</div>
+          <div class="meal-slot-title">${recipe ? escapeHtml(recipe) : "—"}</div>
+          <div class="meal-slot-actions">
+            <button class="btn btn-sm btn-primary" onclick="openRecipeSelectModal('${day}', '${mealType}')">Select</button>
+            ${recipe ? `<button class="btn btn-sm btn-danger" onclick="removeMeal('${day}', '${mealType}')">Clear</button>` : ""}
+          </div>
+        </div>
+      `
+    })
+
+    html += `
+        </div>
+      </div>
+    `
+    grid.innerHTML += html
+  })
+
+  sessionStorage.setItem("currentWeekStart", weekStart.toISOString())
+}
+
+/**
+ * Go to previous week
+ */
+function goToPreviousWeek() {
+  const currentWeekStart = new Date(sessionStorage.getItem("currentWeekStart") || new Date())
+  currentWeekStart.setDate(currentWeekStart.getDate() - 7)
+  displayMealPlan(currentWeekStart)
+}
+
+/**
+ * Go to next week
+ */
+function goToNextWeek() {
+  const currentWeekStart = new Date(sessionStorage.getItem("currentWeekStart") || new Date())
+  currentWeekStart.setDate(currentWeekStart.getDate() + 7)
+  displayMealPlan(currentWeekStart)
+}
+
+/**
+ * Open recipe select modal
+ */
+function openRecipeSelectModal(day, mealType) {
+  const modal = document.getElementById("recipeSelectModal")
+  const listDiv = document.getElementById("recipeSelectList")
+  if (!modal || !listDiv) return
+
+  const recipes = loadRecipes()
+  let html = ""
+
+  recipes.forEach((recipe) => {
+    html += `
+      <div style="padding: 10px; border-bottom: 1px solid #eee; cursor: pointer;" onclick="addMealToDay('${day}', '${mealType}', '${recipe.id}', '${recipe.title.replace(/'/g, "\\'")}')">
+        <strong>${escapeHtml(recipe.title)}</strong>
+        <br>
+        <small>${recipe.difficulty} • ${recipe.prepTime + recipe.cookTime}min</small>
+      </div>
+    `
+  })
+
+  listDiv.innerHTML = html
+  modal.style.display = "flex"
+}
+
+/**
+ * Close recipe select modal
+ */
+function closeRecipeSelectModal() {
+  const modal = document.getElementById("recipeSelectModal")
+  if (modal) modal.style.display = "none"
+}
+
+/**
+ * Add meal to day
+ */
+function addMealToDay(day, mealType, recipeId, recipeName) {
+  const weekStart = new Date(sessionStorage.getItem("currentWeekStart") || new Date())
+  const meals = loadMealPlan(weekStart)
+  if (!meals[day]) meals[day] = {}
+  meals[day][mealType] = recipeName
+  saveMealPlan(weekStart, meals)
+  displayMealPlan(weekStart)
+  closeRecipeSelectModal()
+  showSuccess(`${recipeName} added to ${day} ${mealType}!`)
+}
+
+/**
+ * Remove meal from day
+ */
+function removeMeal(day, mealType) {
+  const weekStart = new Date(sessionStorage.getItem("currentWeekStart") || new Date())
+  const meals = loadMealPlan(weekStart)
+  meals[day][mealType] = null
+  saveMealPlan(weekStart, meals)
+  displayMealPlan(weekStart)
+  showSuccess(`Meal removed from ${day}!`)
+}
+
+/**
+ * Generate shopping list from meal plan
+ */
+function generateShoppingList() {
+  const weekStart = new Date(sessionStorage.getItem("currentWeekStart") || new Date())
+  const meals = loadMealPlan(weekStart)
+  const recipes = loadRecipes()
+  const recipeIds = []
+
+  Object.values(meals).forEach((dayMeals) => {
+    Object.values(dayMeals).forEach((recipeName) => {
+      if (recipeName) {
+        const recipe = recipes.find((r) => r.title === recipeName)
+        if (recipe) recipeIds.push(recipe.id)
+      }
+    })
+  })
+
+  if (recipeIds.length === 0) {
+    showError("No recipes planned for this week!")
+    return
+  }
+
+  const list = getShoppingListFromRecipes(recipeIds)
+  saveShoppingList(list)
+  showSuccess("Shopping list generated!")
+  window.location.href = "shopping-list.html"
+}
+
 // ==================== EVENT LISTENERS ====================
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Initialize storage
   initializeStorage()
+  initializeMealPlanStorage()
 
-  // Determine current page and initialize accordingly
-  const currentPage = window.location.pathname.split("/").pop()
+  const currentPage = window.location.pathname.split("/").pop() || "index.html"
 
   if (currentPage === "index.html" || currentPage === "") {
-    // Home page
     filterRecipes()
 
-    // Attach event listeners for search and filters
     const searchInput = document.getElementById("searchInput")
     const difficultyFilter = document.getElementById("difficultyFilter")
+    const categoryFilter = document.getElementById("categoryFilter")
     const prepTimeFilter = document.getElementById("prepTimeFilter")
+    const favoriteFilter = document.getElementById("favoriteFilter")
     const resetButton = document.getElementById("resetFilters")
 
-    if (searchInput) {
-      searchInput.addEventListener("input", filterRecipes)
-    }
-
-    if (difficultyFilter) {
-      difficultyFilter.addEventListener("change", filterRecipes)
-    }
-
-    if (prepTimeFilter) {
-      prepTimeFilter.addEventListener("input", filterRecipes)
-    }
-
-    if (resetButton) {
-      resetButton.addEventListener("click", resetFilters)
-    }
+    if (searchInput) searchInput.addEventListener("input", filterRecipes)
+    if (difficultyFilter) difficultyFilter.addEventListener("change", filterRecipes)
+    if (categoryFilter) categoryFilter.addEventListener("change", filterRecipes)
+    if (prepTimeFilter) prepTimeFilter.addEventListener("input", filterRecipes)
+    if (favoriteFilter) favoriteFilter.addEventListener("change", filterRecipes)
+    if (resetButton) resetButton.addEventListener("click", resetFilters)
   } else if (currentPage === "recipe-detail.html") {
-    // Recipe detail page
     loadRecipeDetail()
   } else if (currentPage === "add-recipe.html") {
-    // Add/Edit recipe form page
     initializeForm()
+  } else if (currentPage === "meal-plan.html") {
+    const weekStart = getCurrentWeekStart()
+    displayMealPlan(weekStart)
+  } else if (currentPage === "shopping-list.html") {
+    displayShoppingList()
   }
 })

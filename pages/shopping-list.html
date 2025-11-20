@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping List - Recipe Manager</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1>🍳 Recipe Manager</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="add-recipe.html" class="nav-link">Add Recipe</a></li>
+                <li><a href="meal-plan.html" class="nav-link">Meal Plan</a></li>
+                <li><a href="shopping-list.html" class="nav-link active">Shopping List</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h2>Shopping List</h2>
+        
+        <div class="shopping-list-controls">
+            <button class="btn btn-primary" onclick="printShoppingList()">🖨️ Print</button>
+            <button class="btn btn-secondary" onclick="downloadShoppingList()">📥 Download</button>
+            <button class="btn btn-secondary" onclick="clearShoppingList()">Clear All</button>
+            <button class="btn btn-secondary" onclick="window.location.href='../index.html'">Back</button>
+        </div>
+
+        <div id="shoppingListContainer" class="shopping-list-container">
+            <!-- Shopping list will be dynamically inserted here -->
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Recipe Manager. Built with love for cooking enthusiasts.</p>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

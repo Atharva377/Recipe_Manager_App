@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Planning - Recipe Manager</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1>🍳 Recipe Manager</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="add-recipe.html" class="nav-link">Add Recipe</a></li>
+                <li><a href="meal-plan.html" class="nav-link active">Meal Plan</a></li>
+                <li><a href="shopping-list.html" class="nav-link">Shopping List</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h2>Weekly Meal Planning</h2>
+        <p>Plan your meals for the week</p>
+
+        <div class="meal-plan-controls">
+            <button class="btn btn-primary" onclick="goToPreviousWeek()">← Previous Week</button>
+            <span id="weekDisplay"></span>
+            <button class="btn btn-primary" onclick="goToNextWeek()">Next Week →</button>
+            <button class="btn btn-secondary" onclick="generateShoppingList()">Generate Shopping List</button>
+        </div>
+
+        <div id="mealPlanGrid" class="meal-plan-grid">
+            <!-- Meal plan will be dynamically inserted here -->
+        </div>
+
+        <!-- Recipe selection modal -->
+        <div id="recipeSelectModal" class="modal" style="display: none;">
+            <div class="modal-content meal-recipe-modal">
+                <span class="close-modal" onclick="closeRecipeSelectModal()">&times;</span>
+                <h3>Select a Recipe</h3>
+                <div id="recipeSelectList"></div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeRecipeSelectModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Recipe Manager. Built with love for cooking enthusiasts.</p>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>
