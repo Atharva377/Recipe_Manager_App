@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Details</title>
     <link rel="stylesheet" href="../assets/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -26,6 +27,16 @@
             <!-- Recipe details will be dynamically inserted here -->
         </div>
     </main>
+
+    <!-- QR Code Modal -->
+    <div id="qrModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeQRModal()">&times;</span>
+            <h3>Share Recipe via QR Code</h3>
+            <div id="qrCode" style="text-align: center; padding: 20px;"></div>
+            <p style="text-align: center; color: #666;">Scan this QR code to share the recipe</p>
+        </div>
+    </div>
 
     <footer class="footer">
         <p>&copy; 2025 Recipe Manager. Built with love for cooking enthusiasts.</p>
