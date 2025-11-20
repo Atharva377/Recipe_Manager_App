@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Manager - Your Personal Recipe Collection</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1>🍳 Recipe Manager</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="pages/add-recipe.html" class="nav-link">Add Recipe</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Welcome to Your Recipe Collection</h2>
+            <p>Discover, manage, and share your favorite recipes</p>
+        </section>
+
+        <section class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search recipes by title..." />
+            </div>
+            <div class="filter-group">
+                <label for="difficultyFilter">Difficulty:</label>
+                <select id="difficultyFilter">
+                    <option value="">All Levels</option>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="prepTimeFilter">Max Prep Time (mins):</label>
+                <input type="number" id="prepTimeFilter" placeholder="e.g., 30" min="0" />
+            </div>
+            <button id="resetFilters" class="btn btn-secondary">Reset Filters</button>
+        </section>
+
+        <div id="errorContainer" class="error-message" style="display: none;"></div>
+
+        <section id="recipesGrid" class="recipes-grid">
+            <!-- Recipe cards will be dynamically inserted here -->
+        </section>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <h3>No recipes found</h3>
+            <p>Try adjusting your search or filters, or <a href="pages/add-recipe.html">add a new recipe</a></p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Recipe Manager. Built with love for cooking enthusiasts.</p>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
