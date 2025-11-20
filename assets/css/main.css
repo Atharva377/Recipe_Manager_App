@@ -331,6 +331,7 @@ a:hover {
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
+  margin-bottom: 7px;
 }
 
 .difficulty-easy {
