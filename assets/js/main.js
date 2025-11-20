@@ -891,7 +891,7 @@ function displayShoppingList() {
 
   const shoppingList = loadShoppingList()
   if (Object.keys(shoppingList).length === 0) {
-    container.innerHTML =
+    container.innerHTML = 
       '<p style="text-align: center; color: #999;">No items in shopping list. <a href="../index.html">Add recipes to your meal plan</a></p>'
     return
   }
@@ -907,7 +907,7 @@ function displayShoppingList() {
       </div>
     `
   })
-  html += "</div>"
+  html += '</div>'
   container.innerHTML = html
 }
 
@@ -935,10 +935,10 @@ function downloadShoppingList() {
   const list = loadShoppingList()
   const text = Object.entries(list)
     .map(([item, qty]) => `☐ ${item} (x${qty})`)
-    .join("\n")
-  const blob = new Blob([text], { type: "text/plain" })
+    .join('\n')
+  const blob = new Blob([text], { type: 'text/plain' })
   const url = URL.createObjectURL(blob)
-  const link = document.createElement("a")
+  const link = document.createElement('a')
   link.href = url
   link.download = `shopping-list-${new Date().toISOString().slice(0, 10)}.txt`
   link.click()
@@ -1036,7 +1036,7 @@ function getCurrentWeekStart() {
  */
 function saveMealPlan(weekStart, meals) {
   try {
-    const mealPlans = JSON.parse(localStorage.getItem(MEAL_PLAN_STORAGE_KEY) || "{}")
+    const mealPlans = JSON.parse(localStorage.getItem(MEAL_PLAN_STORAGE_KEY) || '{}')
     const weekKey = weekStart.toISOString().slice(0, 10)
     mealPlans[weekKey] = meals
     localStorage.setItem(MEAL_PLAN_STORAGE_KEY, JSON.stringify(mealPlans))
@@ -1051,19 +1051,17 @@ function saveMealPlan(weekStart, meals) {
  */
 function loadMealPlan(weekStart) {
   try {
-    const mealPlans = JSON.parse(localStorage.getItem(MEAL_PLAN_STORAGE_KEY) || "{}")
+    const mealPlans = JSON.parse(localStorage.getItem(MEAL_PLAN_STORAGE_KEY) || '{}')
     const weekKey = weekStart.toISOString().slice(0, 10)
-    return (
-      mealPlans[weekKey] || {
-        Monday: { breakfast: null, lunch: null, dinner: null },
-        Tuesday: { breakfast: null, lunch: null, dinner: null },
-        Wednesday: { breakfast: null, lunch: null, dinner: null },
-        Thursday: { breakfast: null, lunch: null, dinner: null },
-        Friday: { breakfast: null, lunch: null, dinner: null },
-        Saturday: { breakfast: null, lunch: null, dinner: null },
-        Sunday: { breakfast: null, lunch: null, dinner: null },
-      }
-    )
+    return mealPlans[weekKey] || {
+      Monday: { breakfast: null, lunch: null, dinner: null },
+      Tuesday: { breakfast: null, lunch: null, dinner: null },
+      Wednesday: { breakfast: null, lunch: null, dinner: null },
+      Thursday: { breakfast: null, lunch: null, dinner: null },
+      Friday: { breakfast: null, lunch: null, dinner: null },
+      Saturday: { breakfast: null, lunch: null, dinner: null },
+      Sunday: { breakfast: null, lunch: null, dinner: null }
+    }
   } catch (error) {
     console.error("Error loading meal plan:", error)
     return {}
@@ -1099,15 +1097,15 @@ function displayMealPlan(weekStart) {
         <div class="meal-day-header">${day}<br><small>${dayDate.toLocaleDateString()}</small></div>
         <div class="meal-day-body">
     `
-    ;["breakfast", "lunch", "dinner"].forEach((mealType) => {
+    ;['breakfast', 'lunch', 'dinner'].forEach(mealType => {
       const recipe = dayMeals[mealType]
       html += `
         <div class="meal-slot">
           <div class="meal-slot-label">${mealType}</div>
-          <div class="meal-slot-title">${recipe ? escapeHtml(recipe) : "—"}</div>
+          <div class="meal-slot-title">${recipe ? escapeHtml(recipe) : '—'}</div>
           <div class="meal-slot-actions">
             <button class="btn btn-sm btn-primary" onclick="openRecipeSelectModal('${day}', '${mealType}')">Select</button>
-            ${recipe ? `<button class="btn btn-sm btn-danger" onclick="removeMeal('${day}', '${mealType}')">Clear</button>` : ""}
+            ${recipe ? `<button class="btn btn-sm btn-danger" onclick="removeMeal('${day}', '${mealType}')">Clear</button>` : ''}
           </div>
         </div>
       `
@@ -1152,7 +1150,7 @@ function openRecipeSelectModal(day, mealType) {
   const recipes = loadRecipes()
   let html = ""
 
-  recipes.forEach((recipe) => {
+  recipes.forEach(recipe => {
     html += `
       <div style="padding: 10px; border-bottom: 1px solid #eee; cursor: pointer;" onclick="addMealToDay('${day}', '${mealType}', '${recipe.id}', '${recipe.title.replace(/'/g, "\\'")}')">
         <strong>${escapeHtml(recipe.title)}</strong>
@@ -1209,10 +1207,10 @@ function generateShoppingList() {
   const recipes = loadRecipes()
   const recipeIds = []
 
-  Object.values(meals).forEach((dayMeals) => {
-    Object.values(dayMeals).forEach((recipeName) => {
+  Object.values(meals).forEach(dayMeals => {
+    Object.values(dayMeals).forEach(recipeName => {
       if (recipeName) {
-        const recipe = recipes.find((r) => r.title === recipeName)
+        const recipe = recipes.find(r => r.title === recipeName)
         if (recipe) recipeIds.push(recipe.id)
       }
     })
