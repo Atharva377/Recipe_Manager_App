@@ -2,7 +2,7 @@
 
 A fully functional, browser-based recipe management application built with vanilla HTML, CSS, and JavaScript. Manage, search, organize recipes, plan meals, and generate shopping lists—all in your browser with no server required.
 
-# Go to Atharva's CookBook: https://atharva377.github.io/Recipe_Manager_App/
+**Go to Atharva's CookBook:** https://atharva377.github.io/Recipe_Manager_App/
 
 
 ## 🚀 How to Run the App
@@ -15,39 +15,6 @@ A fully functional, browser-based recipe management application built with vanil
 
 No installation, npm packages, or server setup required. Everything runs directly in your browser.
 
-## 🌟 Unique Features Implemented
-
-### 🎯 Advanced Recipe Management
-- **Smart Search & Filtering** - Real-time search by title/description with multiple filter options
-- **Recipe Duplication** - One-click recipe copying for creating variations
-- **Favorites System** - Heart-based favorite marking with visual feedback
-- **5-Star Rating System** - Interactive rating with persistent storage
-- **Nutrition Tracking** - Complete nutrition info (calories, protein, carbs, fat)
-
-### 📱 QR Code Integration
-- **Dynamic QR Generation** - Generate scannable QR codes for any recipe
-- **30-Second Timer** - Auto-closing QR codes with countdown display
-- **Mobile Sharing** - "Scan for recipe from your phone" functionality
-- **Recipe-Specific Codes** - Each QR code links directly to specific recipe details
-
-### 🔄 Data Management
-- **Export/Import System** - Full JSON backup/restore functionality
-- **Browser Storage** - All data persists locally using localStorage
-- **Data Validation** - Comprehensive form validation with error messages
-- **Duplicate Prevention** - Smart merging during import operations
-
-### 🗓️ Meal Planning & Shopping
-- **Weekly Meal Planner** - Visual calendar for breakfast, lunch, dinner planning
-- **Smart Shopping Lists** - Auto-generated from meal plans with ingredient quantities
-- **Interactive Checklist** - Check off items as you shop with visual feedback
-- **Print & Download** - Export shopping lists as printable/text files
-
-### 🎨 User Experience
-- **Responsive Design** - Works perfectly on desktop, tablet, and mobile
-- **Modern UI/UX** - Clean, intuitive interface with smooth animations
-- **Real-time Updates** - Instant filtering and search results
-- **Empty States** - Helpful messages when no recipes or items found
-
 ## 📊 Data Structure in localStorage
 
 ### Storage Keys
@@ -55,7 +22,7 @@ No installation, npm packages, or server setup required. Everything runs directl
 - `"mealPlan"` - Weekly meal plans by date
 - `"shoppingList"` - Shopping list items with quantities
 
-### Recipe Object Schema
+### Recipe Object Schema(Example)
 ```json
 {
   "id": 1700000000000.123,
@@ -100,75 +67,108 @@ No installation, npm packages, or server setup required. Everything runs directl
 ## Assumptions and Limitations
 
 ### Assumptions
-1. **Browser LocalStorage Available** - Assumes the browser supports localStorage API (all modern browsers do)
-2. **No Data Backup** - Data persists only in the current browser; clearing browser data will delete all recipes
-3. **Single Browser Use** - Data doesn't sync across browsers or devices
-4. **Online Images Only** - App requires internet to display recipe images from URLs
-5. **Unique Titles Not Enforced** - Duplicate recipe titles are allowed
-6. **No Authentication** - All data is public to anyone with browser access to this machine
-7. **HTTPS for Images** - Some browsers may block mixed content (HTTP images on HTTPS sites)
+1. **Browser LocalStorage is Available** - Assume the browser is supporting localStorage API (which most modern browsers do)
+2. **No Data Persisting** - Data only persists while using the current browser, and deleting your local browser data clears all recipes.
+3. **Only Using on One Browser** - Data will not sync between other browsers or devices.
+4. **Only Online Images** - You will need to be connected to the Internet to display recipe images from their URLs.
+5. **No Enforced Unique Titles** - The app will allow you to enter recipes with the same title.
+6. **No Authentication Exists** - All data is visible to anyone who has access to this machine through the browser.
+7. **HTTPS Images Only** - Some browsers may block mixed content if anything is set to use http for images on an https site.
 
 ### Limitations
-1. **Storage Capacity** - Limited to ~5-10MB per domain (varies by browser)
-2. **No Backup/Export** - No built-in download/export functionality
-3. **No Sharing** - Recipes cannot be easily shared between users or devices
-4. **No Image Upload** - Only external URLs supported; cannot upload local images
-5. **No User Accounts** - Single user only; no multi-user support
-6. **No Offline Image Caching** - Recipe images won't display without internet
-7. **No Database** - Not suitable for large-scale recipe collections (100+ recipes)
-8. **No Advanced Search** - Search only works on title and description, not ingredients
+1. **Storage Options** - Each domain is only allowed ~5-10MB (depending on the browser).
+2. **No Backup/Export Options** - There is currently no ability to download/export recipes or images.
+3. **No Sharing Options** - Recipes cannot be easily shared among users or devices.
+4. **No Image Uploading** - You can only include links for external images; images cannot be uploaded from the local device.
+5. **No User Accounts** - Only one user is allowed; there will be no support for multiple users.
+6. **No Downloaded/Offline Image Caching** - If you are offline, your recipe images will not load.
+7. **No Database** - Your recipes will not be great if you want to compile a database of recipes (100+).
+8. **No Advanced Search Functionality** - Search only works against the title and description, not the ingredients.
 
 ## Known Issues
 
-### 1. Image Loading Failures
-**Issue:** Recipe images may not load if the URL is broken or uses HTTP on an HTTPS site.
-**Workaround:** Use HTTPS image URLs only. Test image URLs before adding recipes.
+### 1. Image Not Loading
+**Problem:** If the URL is broken or starts with HTTP on an HTTPS site, it will not work.
+**Temporary Solution:** Use HTTPS image URLs. Test your URL before your recipe is added.
 
 ### 2. LocalStorage Quota Exceeded
-**Issue:** Adding too many recipes with long descriptions may exceed browser storage limits.
-**Workaround:** Delete unused recipes or store fewer high-resolution images.
+**Problem:** If you've added many recipes with long descriptions, you may hit your browser storage limit.
+**Temporary Solution:** Either delete any recipes you don't use, or have fewer high-definition images stored.
 
-### 3. Data Loss on Browser Clear
-**Issue:** Clearing browser cache/cookies will delete all recipes stored in localStorage.
-**Workaround:** Manually backup important recipes by noting their details.
+### 3. Data Loss from Clearing Browser
+**Problem:** If you clear your browser cache/cookies, all recipes stored in localStorage will be deleted.
+**Temporary Solution:** Manually keep track of and record any important recipe.
 
-### 4. Corrupted Data Recovery
-**Issue:** If localStorage data becomes corrupted (unlikely), the app may fail to load.
-**Workaround:** Open browser DevTools (F12) → Application → Storage → Clear localStorage, then reload the page to reset with fresh data.
+### 4. Corrupting Data
+**Problem:** In the unlikely event something gets corrupted in the localStorage, the app may not work at all.
+**Temporary Solution:** In the browser, open DevTools (F12) → Application → Storage → Clear localStorage. Reload the page to get a fresh data resync of the app.
 
 ### 5. Special Characters in Titles
-**Issue:** Some special characters in recipe titles may cause display issues.
-**Workaround:** Use standard alphanumeric characters, spaces, and basic punctuation.
+**Problem:** In some cases, special characters in the recipe title may not display properly.
+**Temporary Solution:** Use standard alphanumeric characters, spaces, and basic punctuation only.
 
 ### 6. Mobile Keyboard Layout
-**Issue:** On mobile, the keyboard may overlap with input fields.
-**Workaround:** The app is responsive and scrollable; scroll after clicking input fields.
+**Problem:** On mobile the keyboard may overlap the input fields.
+**Temporary Solution:** The app is responsive and scrollable, scroll after you click on the input fields!
+
+## 🌟 Unique Features Implemented
+
+### 🎯 Advanced Recipe Management
+- **Smart Search & Filtering** - Perform searches in real time by title/description with multiple filter options
+- **Recipe Duplication** - One-click copy a recipe to create variations
+- **Favorites System** - Mark a recipe as a favorite with a heart and get visual feedback
+- **5-Star Rating System** - During any rating process, the rating persists when you re-enter the recipe
+- **Nutrition Tracking** - All nutritional information for each recipe (counting calories, protein, carbs, fat)
+
+### 📱 QR Code Integration
+- **Dynamic QR Generation** - Generate a scannable QR code for any recipe
+- **30 Second Timer** - QR codes will close automatically after 30 seconds and show a countdown clock
+- **Mobile Sharing** - "Scan for recipe from your phone" capability
+- **Recipe-Specific Codes** - Each QR code leads directly to specific details of that recipe
+
+### 🔄 Data Management
+- **Export/Import System** - Full JSON backup/restore functionality
+- **Browser Storage** - All data is stored locally using localStorage
+- **Data Validation** - Fully validated forms with message errors
+- **Duplicate Prevention** - If there is a recipe with the same name, an import will "smart merge" recipes when importing
+
+### 🗓️ Meal Planning & Shopping
+- **Weekly Meal Planner** - A calendar to visualize what you are planning for breakfast, lunch, and dinner by the day of the week
+- **Smart Shopping Lists** - Automatically generated shopping list from meal planning with quantities of each ingredient
+- **Checklist** - Check off your items while shopping with visual feedback
+- **Print & Download** - Download the shopping lists to print or read it as text
+
+### 🎨 User Experience
+- **Responsive Design** - Works perfectly on desktop, tablet, and mobile
+- **Modern UI/UX** - Clean, intuitive interface with smooth animations
+- **Real-time Updates** - Instant filtering and search results
+- **Empty States** - Helpful messages when no recipes or items found
 
 ## Features
 
-### Core Features
-- View all recipes in a responsive grid layout
+### Primary Functionality
+- Display all recipes using a responsive grid format
 - Search recipes by title or description (real-time)
-- Filter by difficulty level (Easy, Medium, Hard)
-- Filter by maximum prep time
-- View detailed recipe information
-- Add new recipes with a form
-- Edit existing recipes
-- Delete recipes with confirmation
-- All data persists in browser localStorage
+- Filter by the difficulty level (Easy, Medium, Hard)
+- Filter by prep time (maximum)
+- View detailed information about recipes
+- Allow the user to add recipes via a form
+- Allow the user to edit recipes
+- Allow the user to delete recipes after confirmation
+- All application data persisted to browser localStorage.
 
 ### User Experience
 - Responsive design (desktop, tablet, mobile)
-- Smooth transitions and animations
-- Clear error messages and validation
-- Success notifications
-- Empty state handling
-- Loading states where applicable
+- Transitions and animations
+- Error messages and validation with clarity
+- Notification for success
+- Handle an empty state
+- Handle loading states as necessary
 
 ## Technical Stack
 
-- **HTML5** - Semantic markup
+- **HTML5** - Semantic page structure
 - **CSS3** - Flexbox layout, responsive design, custom properties
 - **JavaScript** - No frameworks or libraries
-- **localStorage API** - Client-side data persistence
-- **Online Images** - External image URLs (Placeholder images included)
+- **localStorage API** - Enables client-side data storage
+- **Online Images** - All images are sourced from external URLs (mainly from Unsplash)
