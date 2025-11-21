@@ -109,15 +109,18 @@ However, in other browsers, only the Veg Biryani recipe appears, and the remaini
 **Problem:** If you clear your browser cache/cookies, all recipes stored in localStorage will be deleted.
 **Temporary Solution:** Manually keep track of and record any important recipe.
 
-### 6. Corrupting Data
-**Problem:** In the unlikely event something gets corrupted in the localStorage, the app may not work at all.
-**Temporary Solution:** In the browser, open DevTools (F12) → Application → Storage → Clear localStorage. Reload the page to get a fresh data resync of the app.
+### 6. Private/Incognito Mode Restrictions
+**Problem:** Some browsers block or severely limit localStorage in Incognito/Private mode.
+**Temporary Solution:** Try not using Private/Incognito Mode.
 
 ### 7. Special Characters in Titles
 **Problem:** In some cases, special characters in the recipe title may not display properly.
 **Temporary Solution:** Use standard alphanumeric characters, spaces, and basic punctuation only.
 
-### 8. Missing or Broken Recipe Image
+### 8. LocalStorage Sync Conflicts Across Tabs
+**Problem:** If the user opens the website in multiple tabs, changes made in one tab may overwrite data in another.
+
+### 9. Missing or Broken Recipe Image
 **Problem:** If a recipe image URL is invalid, unavailable, or fails to load, the image will not display correctly.
 **Temporary Solution:** The app will automatically fall back to a default placeholder image when the provided image URL cannot be loaded.
 
