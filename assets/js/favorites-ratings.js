@@ -5,11 +5,11 @@
  */
 function toggleFavorite(recipeId) {
   const recipes = loadRecipes()
-  const recipe = recipes.find((r) => r.id === recipeId)
+  const recipe = recipes.find((r) => String(r.id) === String(recipeId))
   if (recipe) {
     recipe.isFavorite = !recipe.isFavorite
     saveRecipes(recipes)
-    const btn = document.querySelector(`[data-favorite-btn="${recipeId}"]`)
+    const btn = document.querySelector(`[data-favorite-btn="${String(recipeId)}"]`)
     if (btn) {
       btn.classList.toggle("active")
       btn.textContent = recipe.isFavorite ? "❤️ Favorited" : "🤍 Add to Favorites"
@@ -23,7 +23,7 @@ function toggleFavorite(recipeId) {
  */
 function setRating(recipeId, rating) {
   const recipes = loadRecipes()
-  const recipe = recipes.find((r) => r.id === recipeId)
+  const recipe = recipes.find((r) => String(r.id) === String(recipeId))
   if (recipe) {
     recipe.rating = rating
     saveRecipes(recipes)
@@ -41,8 +41,17 @@ function displayRecipeRating(recipe) {
 
   let html = '<div class="recipe-rating"><strong>Your Rating:</strong>'
   for (let i = 1; i <= 5; i++) {
-    html += `<span class="star ${i <= recipe.rating ? "active" : ""}" onclick="setRating(${recipe.id}, ${i})">★</span>`
+    html += `<span class="star ${i <= recipe.rating ? "active" : ""}" data-star-index="${i}" data-recipe-id="${recipe.id}">★</span>`
   }
   html += "</div>"
   ratingContainer.innerHTML = html
+  // attach listeners for the stars
+  const stars = ratingContainer.querySelectorAll('.star')
+  stars.forEach(function (s) {
+    s.addEventListener('click', function () {
+      const idx = this.getAttribute('data-star-index')
+      const rid = this.getAttribute('data-recipe-id')
+      setRating(rid, Number(idx))
+    })
+  })
 }

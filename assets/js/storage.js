@@ -41,7 +41,31 @@ function loadRecipes() {
     if (!recipes) {
       return []
     }
-    return JSON.parse(recipes)
+    // normalize parsed recipes to avoid type/format issues across browsers
+    const parsed = JSON.parse(recipes)
+    if (!Array.isArray(parsed)) return []
+    return parsed.map((r) => {
+      const recipe = r || {}
+      return {
+        ...recipe,
+        id: recipe.id !== undefined && recipe.id !== null ? String(recipe.id) : String(generateId()),
+        title: recipe.title || "Untitled Recipe",
+        description: recipe.description || "",
+        prepTime: Number(recipe.prepTime) || 0,
+        cookTime: Number(recipe.cookTime) || 0,
+        servings: Number(recipe.servings) || 1,
+        difficulty: recipe.difficulty || "Unknown",
+        category: recipe.category || "",
+        tags: Array.isArray(recipe.tags) ? recipe.tags : [],
+        imageUrl: recipe.imageUrl || "",
+        rating: Number(recipe.rating) || 0,
+        isFavorite: !!recipe.isFavorite,
+        createdAt: recipe.createdAt || new Date().toISOString(),
+        ingredients: Array.isArray(recipe.ingredients) ? recipe.ingredients : [],
+        steps: Array.isArray(recipe.steps) ? recipe.steps : [],
+        nutrition: recipe.nutrition || {},
+      }
+    })
   } catch (error) {
     console.error("Error loading recipes:", error)
     showError("Failed to load recipes. Your data may be corrupted.")

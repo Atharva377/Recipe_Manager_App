@@ -14,9 +14,8 @@ function loadRecipeDetail() {
     return
   }
 
-  // Convert to number - use parseFloat to preserve decimals
-  recipeId = Number.parseFloat(recipeId)
-  console.log("Parsed recipe ID:", recipeId)
+  // Keep recipeId as string to avoid precision/type issues
+  console.log("Selected recipe ID (raw):", recipeId)
 
   const detailContainer = document.getElementById("recipeDetail")
   if (!detailContainer) {
@@ -28,8 +27,8 @@ function loadRecipeDetail() {
   console.log("Total recipes in storage:", recipes.length)
   console.log("All recipe IDs:", recipes.map(r => r.id))
 
-  // Find recipe - compare as numbers
-  const recipe = recipes.find((r) => Number(r.id) === Number(recipeId))
+  // Find recipe using string comparison to be robust across browsers
+  const recipe = recipes.find((r) => String(r.id) === String(recipeId))
 
   if (!recipe) {
     console.error("Recipe not found for ID:", recipeId)
@@ -93,7 +92,7 @@ function loadRecipeDetail() {
 
       <div class="recipe-detail-section">
         <div id="recipeRating"></div>
-        <button class="favorite-btn ${recipe.isFavorite ? "active" : ""}" onclick="toggleFavorite(${recipe.id}); location.reload();">
+        <button class="favorite-btn ${recipe.isFavorite ? "active" : ""}" onclick="toggleFavorite('${recipe.id}'); location.reload();">
           ${recipe.isFavorite ? "❤️ Favorited" : "🤍 Add to Favorites"}
         </button>
       </div>
@@ -116,10 +115,10 @@ function loadRecipeDetail() {
 
       <div class="recipe-detail-actions">
         <a href="landing.html" class="btn btn-secondary">Back to Recipes</a>
-        <button class="btn btn-primary" onclick="goToEdit(${recipe.id})">Edit Recipe</button>
-        <button class="btn btn-secondary" onclick="generateQRCode(${recipe.id})">Share QR Code</button>
-        <button class="btn btn-secondary" onclick="duplicateRecipeFromDetail(${recipe.id})">Duplicate Recipe</button>
-        <button class="btn btn-danger" onclick="deleteAndReturn(${recipe.id})">Delete Recipe</button>
+        <button class="btn btn-primary" onclick="goToEdit('${recipe.id}')">Edit Recipe</button>
+        <button class="btn btn-secondary" onclick="generateQRCode('${recipe.id}')">Share QR Code</button>
+        <button class="btn btn-secondary" onclick="duplicateRecipeFromDetail('${recipe.id}')">Duplicate Recipe</button>
+        <button class="btn btn-danger" onclick="deleteAndReturn('${recipe.id}')">Delete Recipe</button>
         <button class="btn btn-secondary" onclick="window.print()">🖨️ Print</button>
       </div>
     </div>
@@ -146,7 +145,7 @@ function deleteAndReturn(recipeId) {
 
   try {
     let recipes = loadRecipes()
-    recipes = recipes.filter((r) => Number(r.id) !== Number(recipeId))
+    recipes = recipes.filter((r) => String(r.id) !== String(recipeId))
     saveRecipes(recipes)
     sessionStorage.removeItem("selectedRecipeId")
     window.location.href = "landing.html"
@@ -160,7 +159,7 @@ function deleteAndReturn(recipeId) {
  */
 function duplicateRecipeFromDetail(recipeId) {
   const recipes = loadRecipes()
-  const recipe = recipes.find((r) => Number(r.id) === Number(recipeId))
+  const recipe = recipes.find((r) => String(r.id) === String(recipeId))
 
   if (!recipe) {
     showError("Recipe not found.")
@@ -169,7 +168,7 @@ function duplicateRecipeFromDetail(recipeId) {
 
   const duplicatedRecipe = {
     ...recipe,
-    id: generateId(),
+    id: String(generateId()),
     title: `${recipe.title} (Copy)`,
     createdAt: new Date().toISOString(),
     isFavorite: false,

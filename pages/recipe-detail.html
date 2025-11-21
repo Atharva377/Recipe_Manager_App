@@ -13,11 +13,11 @@
     <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-brand">
-                <h1>🍳 Recipe Manager</h1>
+                <h1 data-i18n="brand">🍳 Recipe Manager</h1>
             </div>
             <ul class="nav-menu">
-                <li><a href="landing.html" class="nav-link">Home</a></li>
-                <li><a href="add-recipe.html" class="nav-link">Add Recipe</a></li>
+                <li><a href="landing.html" class="nav-link" data-i18n="nav_home">Home</a></li>
+                <li><a href="add-recipe.html" class="nav-link" data-i18n="nav_add">Add Recipe</a></li>
             </ul>
         </div>
     </nav>
@@ -34,18 +34,19 @@
     <div id="qrModal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close-modal" onclick="closeQRModal()">&times;</span>
-            <h3>Share Recipe via QR Code</h3>
+            <h3 data-i18n="qr_title">Share Recipe via QR Code</h3>
             <div id="qrCode" style="text-align: center; padding: 20px;"></div>
-            <p style="text-align: center; color: #666; font-weight: 500;">Scan for recipe from your phone</p>
+            <p data-i18n="qr_scan_hint" style="text-align: center; color: #666; font-weight: 500;">Scan for recipe from your phone</p>
             <div id="qrTimer" style="text-align: center; color: #999; font-size: 14px; margin-top: 10px;"></div>
         </div>
     </div>
 
     <footer class="footer">
-        <p>&copy; 2025 Recipe Manager. Built with love for cooking enthusiasts.</p>
+        <p data-i18n="footer">&copy; 2025 Recipe Manager. Built with love for cooking enthusiasts.</p>
     </footer>
 
     <!-- Core scripts -->
+    <script src="../assets/js/i18n.js"></script>
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/storage.js"></script>
     <script src="../assets/js/recipe-detail.js"></script>

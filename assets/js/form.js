@@ -169,7 +169,7 @@ function handleFormSubmit(e) {
     } else {
       // Add mode
       const newRecipe = {
-        id: generateId(),
+        id: String(generateId()),
         ...formData,
         isFavorite: false,
         rating: 0,

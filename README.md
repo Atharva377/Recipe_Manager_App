@@ -86,34 +86,39 @@ No installation, npm packages, or server setup required. Everything runs directl
 8. **No Advanced Search Functionality** - Search only works against the title and description, not the ingredients.
 
 ## Known Issues
+### 1. Hardcoded Recipes Not Displaying Consistently Across Browsers
+**Problem:** In some browsers, all 5 hardcoded recipes are visible as expected.
+However, in other browsers, only the Veg Biryani recipe appears, and the remaining 4 do not load.
+**Temporary Solution:** Clear cache and reload.
 
-### 1. Image Not Loading
+### 2. Image Not Loading
 **Problem:** If the URL is broken or starts with HTTP on an HTTPS site, it will not work.
 **Temporary Solution:** Use HTTPS image URLs. Test your URL before your recipe is added.
 
-### 2. LocalStorage Quota Exceeded
+### 3. LocalStorage Quota Exceeded
 **Problem:** If you've added many recipes with long descriptions, you may hit your browser storage limit.
 **Temporary Solution:** Either delete any recipes you don't use, or have fewer high-definition images stored.
 
-### 3. Data Loss from Clearing Browser
+### 4. Data Loss from Clearing Browser
 **Problem:** If you clear your browser cache/cookies, all recipes stored in localStorage will be deleted.
 **Temporary Solution:** Manually keep track of and record any important recipe.
 
-### 4. Corrupting Data
+### 5. Corrupting Data
 **Problem:** In the unlikely event something gets corrupted in the localStorage, the app may not work at all.
 **Temporary Solution:** In the browser, open DevTools (F12) → Application → Storage → Clear localStorage. Reload the page to get a fresh data resync of the app.
 
-### 5. Special Characters in Titles
+### 6. Special Characters in Titles
 **Problem:** In some cases, special characters in the recipe title may not display properly.
 **Temporary Solution:** Use standard alphanumeric characters, spaces, and basic punctuation only.
 
-### 6. Mobile Keyboard Layout
+### 7. Mobile Keyboard Layout
 **Problem:** On mobile the keyboard may overlap the input fields.
 **Temporary Solution:** The app is responsive and scrollable, scroll after you click on the input fields!
 
 ## 🌟 Unique Features Implemented
 
 ### 🎯 Advanced Recipe Management
+- **Multilingual Support Implementation** - This website seamlessly adapts its interface and content based on the user's preferred language, offering a localized experience across multiple languages(English, Hindi, Marathi).
 - **Smart Search & Filtering** - Perform searches in real time by title/description with multiple filter options
 - **Recipe Duplication** - One-click copy a recipe to create variations
 - **Favorites System** - Mark a recipe as a favorite with a heart and get visual feedback

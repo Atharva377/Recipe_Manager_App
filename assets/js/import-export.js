@@ -55,7 +55,7 @@ function handleImport() {
 
       const currentRecipes = loadRecipes()
       const mergedRecipes = [...currentRecipes, ...importedRecipes].filter(
-        (recipe, index, self) => index === self.findIndex((r) => r.id === recipe.id),
+        (recipe, index, self) => index === self.findIndex((r) => String(r.id) === String(recipe.id)),
       )
       saveRecipes(mergedRecipes)
       showSuccess(`Successfully imported ${importedRecipes.length} recipes!`)

@@ -19,11 +19,28 @@ function renderRecipes(recipes) {
 
   grid.style.display = "grid"
   if (emptyState) emptyState.style.display = "none"
+  for (var i = 0; i < recipes.length; i++) {
+    var recipe = recipes[i]
+    try {
+      // ensure recipe is a simple object
+      if (!recipe || typeof recipe !== "object") {
+        console.warn("Skipping invalid recipe at index", i, recipe)
+        continue
+      }
+      // provide defaults for missing fields to avoid runtime errors in older browsers
+      if (!recipe.title) recipe.title = "Untitled Recipe"
+      if (!recipe.difficulty) recipe.difficulty = "Unknown"
+      if (typeof recipe.prepTime !== "number") recipe.prepTime = Number(recipe.prepTime) || 0
+      if (typeof recipe.cookTime !== "number") recipe.cookTime = Number(recipe.cookTime) || 0
 
-  recipes.forEach((recipe) => {
-    const card = createRecipeCard(recipe)
-    grid.appendChild(card)
-  })
+      const card = createRecipeCard(recipe)
+      if (card) grid.appendChild(card)
+    } catch (err) {
+      console.error("Error rendering recipe at index", i, err)
+      // continue rendering other recipes
+      continue
+    }
+  }
 }
 
 /**
@@ -33,40 +50,111 @@ function createRecipeCard(recipe) {
   const card = document.createElement("div")
   card.className = "recipe-card"
 
-  const totalTime = recipe.prepTime + recipe.cookTime
+  const totalTime = Number(recipe.prepTime || 0) + Number(recipe.cookTime || 0)
   const imageUrl = recipe.imageUrl || DEFAULT_IMAGE
-  const tagsHtml = (recipe.tags || [])
-    .slice(0, 3)
-    .map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`)
-    .join("")
-  const ratingDisplay = recipe.rating ? `⭐ ${recipe.rating}/5` : "Not rated"
 
-  card.innerHTML = `
-    <img src="${imageUrl}" alt="${recipe.title}" class="recipe-card-image" onerror="this.src='${DEFAULT_IMAGE}'">
-    <div class="recipe-card-content">
-      <div style="display: flex; justify-content: space-between; align-items: start;">
-        <div>
-          <h3 class="recipe-card-title">${escapeHtml(recipe.title)}</h3>
-          <div class="tags-container">${tagsHtml}</div>
-        </div>
-        <button class="favorite-btn ${recipe.isFavorite ? "active" : ""}" data-favorite-btn="${recipe.id}" onclick="event.stopPropagation(); toggleFavorite(${recipe.id})" title="Add to favorites">
-          ${recipe.isFavorite ? "❤️" : "🤍"}
-        </button>
-      </div>
-      <div class="recipe-card-meta">
-        <div class="recipe-meta-item">⏱️ ${formatTime(totalTime)}</div>
-        <div class="recipe-meta-item">👥 ${recipe.servings}</div>
-        <div class="recipe-meta-item">${ratingDisplay}</div>
-      </div>
-      <span class="difficulty-badge ${getDifficultyClass(recipe.difficulty)}">${recipe.difficulty}</span>
-      <span class="difficulty-badge" style="background-color: #dbeafe; color: #1e40af;">${recipe.category || "Uncategorized"}</span>
-      <p class="recipe-card-description">${escapeHtml(recipe.description || "A delicious recipe")}</p>
-      <div class="recipe-card-actions">
-        <button class="btn btn-primary btn-small" onclick="viewRecipe(${recipe.id})">View</button>
+  // Image
+  const img = document.createElement("img")
+  img.src = imageUrl
+  img.alt = recipe.title || "Recipe Image"
+  img.className = "recipe-card-image"
+  img.onerror = function () {
+    this.src = DEFAULT_IMAGE
+  }
 
-      </div>
-    </div>
-  `
+  // Content wrapper
+  const content = document.createElement("div")
+  content.className = "recipe-card-content"
+
+  // Header (title + favorite)
+  const header = document.createElement("div")
+  header.style.display = "flex"
+  header.style.justifyContent = "space-between"
+  header.style.alignItems = "start"
+
+  const titleWrap = document.createElement("div")
+  const titleEl = document.createElement("h3")
+  titleEl.className = "recipe-card-title"
+  titleEl.textContent = escapeHtml(recipe.title)
+
+  const tagsContainer = document.createElement("div")
+  tagsContainer.className = "tags-container"
+  const tags = recipe.tags && Array.isArray(recipe.tags) ? recipe.tags.slice(0, 3) : []
+  tags.forEach(function (t) {
+    const span = document.createElement("span")
+    span.className = "tag"
+    span.textContent = escapeHtml(t)
+    tagsContainer.appendChild(span)
+  })
+
+  titleWrap.appendChild(titleEl)
+  titleWrap.appendChild(tagsContainer)
+
+  const favBtn = document.createElement("button")
+  favBtn.className = "favorite-btn" + (recipe.isFavorite ? " active" : "")
+  favBtn.setAttribute("data-favorite-btn", String(recipe.id))
+  favBtn.title = "Add to favorites"
+  favBtn.textContent = recipe.isFavorite ? "❤️" : "🤍"
+  favBtn.addEventListener("click", function (ev) {
+    ev.stopPropagation()
+    toggleFavorite(String(recipe.id))
+  })
+
+  header.appendChild(titleWrap)
+  header.appendChild(favBtn)
+
+  // Meta
+  const meta = document.createElement("div")
+  meta.className = "recipe-card-meta"
+  const timeItem = document.createElement("div")
+  timeItem.className = "recipe-meta-item"
+  timeItem.textContent = "⏱️ " + formatTime(totalTime)
+  const serveItem = document.createElement("div")
+  serveItem.className = "recipe-meta-item"
+  serveItem.textContent = "👥 " + (recipe.servings || 1)
+  const ratingItem = document.createElement("div")
+  ratingItem.className = "recipe-meta-item"
+  ratingItem.textContent = recipe.rating ? "⭐ " + recipe.rating + "/5" : "Not rated"
+  meta.appendChild(timeItem)
+  meta.appendChild(serveItem)
+  meta.appendChild(ratingItem)
+
+  // Difficulty & category badges
+  const diffBadge = document.createElement("span")
+  diffBadge.className = "difficulty-badge " + getDifficultyClass(recipe.difficulty)
+  diffBadge.textContent = recipe.difficulty
+  const catBadge = document.createElement("span")
+  catBadge.className = "difficulty-badge"
+  catBadge.style.backgroundColor = "#dbeafe"
+  catBadge.style.color = "#1e40af"
+  catBadge.textContent = recipe.category || "Uncategorized"
+
+  // Description
+  const desc = document.createElement("p")
+  desc.className = "recipe-card-description"
+  desc.textContent = escapeHtml(recipe.description || "A delicious recipe")
+
+  // Actions
+  const actions = document.createElement("div")
+  actions.className = "recipe-card-actions"
+  const viewBtn = document.createElement("button")
+  viewBtn.className = "btn btn-primary btn-small"
+  viewBtn.textContent = "View"
+  viewBtn.addEventListener("click", function () {
+    viewRecipe(String(recipe.id))
+  })
+  actions.appendChild(viewBtn)
+
+  // assemble
+  content.appendChild(header)
+  content.appendChild(meta)
+  content.appendChild(diffBadge)
+  content.appendChild(catBadge)
+  content.appendChild(desc)
+  content.appendChild(actions)
+
+  card.appendChild(img)
+  card.appendChild(content)
 
   return card
 }
@@ -75,11 +163,17 @@ function createRecipeCard(recipe) {
  * Filter and search recipes
  */
 function filterRecipes() {
-  const searchTerm = document.getElementById("searchInput")?.value.toLowerCase() || ""
-  const difficulty = document.getElementById("difficultyFilter")?.value || ""
-  const category = document.getElementById("categoryFilter")?.value || ""
-  const maxPrepTime = Number.parseInt(document.getElementById("prepTimeFilter")?.value) || Number.POSITIVE_INFINITY
-  const favoritesOnly = document.getElementById("favoriteFilter")?.checked || false
+  const searchEl = document.getElementById("searchInput")
+  const difficultyEl = document.getElementById("difficultyFilter")
+  const categoryEl = document.getElementById("categoryFilter")
+  const prepTimeEl = document.getElementById("prepTimeFilter")
+  const favoriteEl = document.getElementById("favoriteFilter")
+
+  const searchTerm = searchEl && searchEl.value ? searchEl.value.toLowerCase() : ""
+  const difficulty = difficultyEl && difficultyEl.value ? difficultyEl.value : ""
+  const category = categoryEl && categoryEl.value ? categoryEl.value : ""
+  const maxPrepTime = prepTimeEl && prepTimeEl.value ? Number.parseInt(prepTimeEl.value) || Number.POSITIVE_INFINITY : Number.POSITIVE_INFINITY
+  const favoritesOnly = !!(favoriteEl && favoriteEl.checked)
 
   let recipes = loadRecipes()
 
@@ -121,7 +215,7 @@ function resetFilters() {
  * View recipe details
  */
 function viewRecipe(recipeId) {
-  sessionStorage.setItem("selectedRecipeId", recipeId)
+  sessionStorage.setItem("selectedRecipeId", String(recipeId))
   window.location.href = "recipe-detail.html"
 }
 
@@ -129,7 +223,7 @@ function viewRecipe(recipeId) {
  * Edit recipe
  */
 function editRecipe(recipeId) {
-  sessionStorage.setItem("editRecipeId", recipeId)
+  sessionStorage.setItem("editRecipeId", String(recipeId))
   window.location.href = "add-recipe.html"
 }
 
@@ -143,7 +237,7 @@ function deleteRecipe(recipeId) {
 
   try {
     let recipes = loadRecipes()
-    recipes = recipes.filter((r) => r.id !== recipeId)
+    recipes = recipes.filter((r) => String(r.id) !== String(recipeId))
     saveRecipes(recipes)
     filterRecipes()
     showSuccess("Recipe deleted successfully!")
@@ -157,7 +251,7 @@ function deleteRecipe(recipeId) {
  */
 function duplicateRecipe(recipeId) {
   const recipes = loadRecipes()
-  const recipe = recipes.find((r) => r.id === recipeId)
+  const recipe = recipes.find((r) => String(r.id) === String(recipeId))
 
   if (!recipe) {
     showError("Recipe not found.")
@@ -166,7 +260,7 @@ function duplicateRecipe(recipeId) {
 
   const duplicatedRecipe = {
     ...recipe,
-    id: generateId(),
+    id: String(generateId()),
     title: `${recipe.title} (Copy)`,
     createdAt: new Date().toISOString(),
     isFavorite: false,

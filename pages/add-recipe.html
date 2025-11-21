@@ -12,7 +12,7 @@
     <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-brand">
-                <h1>🍳 Recipe Manager</h1>
+                <h1 data-i18n="brand">🍳 Recipe Manager</h1>
             </div>
             <button class="hamburger" onclick="toggleMenu()">
                 <span></span>
@@ -20,36 +20,36 @@
                 <span></span>
             </button>
             <ul class="nav-menu">
-                <li><a href="landing.html" class="nav-link">Home</a></li>
-                <li><a href="add-recipe.html" class="nav-link active">Add Recipe</a></li>
+                <li><a href="landing.html" class="nav-link" data-i18n="nav_home">Home</a></li>
+                <li><a href="add-recipe.html" class="nav-link active" data-i18n="nav_add">Add Recipe</a></li>
             </ul>
         </div>
     </nav>
 
     <main class="container">
         <section class="form-section">
-            <h2 id="formTitle">Add New Recipe</h2>
+            <h2 id="formTitle" data-i18n="form_title">Add New Recipe</h2>
 
             <div id="errorContainer" class="error-message" style="display: none;"></div>
             <div id="successContainer" class="success-message" style="display: none;"></div>
 
             <form id="recipeForm" class="recipe-form">
                 <div class="form-group">
-                    <label for="title">Recipe Title *</label>
-                    <input type="text" id="title" name="title" required placeholder="e.g., Veg Biryani">
+                    <label for="title" data-i18n="label_recipe_title">Recipe Title *</label>
+                    <input type="text" id="title" name="title" required data-i18n-placeholder="placeholder_title" placeholder="e.g., Veg Biryani">
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description" placeholder="Describe your recipe in a few sentences..." rows="4"></textarea>
+                    <label for="description" data-i18n="label_description">Description</label>
+                    <textarea id="description" name="description" data-i18n-placeholder="placeholder_description" placeholder="Describe your recipe in a few sentences..." rows="4"></textarea>
                 </div>
 
                 <!-- Added category and tags fields -->
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="category">Category *</label>
+                        <label for="category" data-i18n="label_category">Category *</label>
                         <select id="category" name="category" required>
-                            <option value="">Select category</option>
+                            <option value="" data-i18n="select_category">Select category</option>
                             <option value="Vegetarian">Vegetarian</option>
                             <option value="Vegan">Vegan</option>
                             <option value="Non-Vegetarian">Non-Vegetarian</option>
@@ -58,31 +58,31 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="tags">Tags (comma-separated)</label>
-                        <input type="text" id="tags" name="tags" placeholder="e.g., spicy, quick, healthy">
+                        <label for="tags" data-i18n="label_tags">Tags (comma-separated)</label>
+                        <input type="text" id="tags" name="tags" data-i18n-placeholder="placeholder_tags" placeholder="e.g., spicy, quick, healthy">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="prepTime">Prep Time (minutes) *</label>
+                        <label for="prepTime" data-i18n="label_prepTime">Prep Time (minutes) *</label>
                         <input type="number" id="prepTime" name="prepTime" required min="0" placeholder="30">
                     </div>
                     <div class="form-group">
-                        <label for="cookTime">Cook Time (minutes) *</label>
+                        <label for="cookTime" data-i18n="label_cookTime">Cook Time (minutes) *</label>
                         <input type="number" id="cookTime" name="cookTime" required min="0" placeholder="45">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="servings">Servings *</label>
+                        <label for="servings" data-i18n="label_servings">Servings *</label>
                         <input type="number" id="servings" name="servings" required min="1" placeholder="4">
                     </div>
                     <div class="form-group">
-                        <label for="difficulty">Difficulty Level *</label>
+                        <label for="difficulty" data-i18n="label_difficulty">Difficulty Level *</label>
                         <select id="difficulty" name="difficulty" required>
-                            <option value="">Select difficulty</option>
+                            <option value="" data-i18n="select_difficulty">Select difficulty</option>
                             <option value="Easy">Easy</option>
                             <option value="Medium">Medium</option>
                             <option value="Hard">Hard</option>
@@ -92,7 +92,7 @@
 
                 <!-- Added nutrition fields -->
                 <fieldset class="form-fieldset">
-                    <legend>Nutrition Information (per serving)</legend>
+                    <legend data-i18n="legend_nutrition">Nutrition Information (per serving)</legend>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="calories">Calories</label>
@@ -114,35 +114,36 @@
                 </fieldset>
 
                 <div class="form-group">
-                    <label for="imageUrl">Recipe Image URL</label>
-                    <input type="url" id="imageUrl" name="imageUrl" placeholder="https://example.com/image.jpg">
-                    <small>Paste a URL to a food image. Leave blank for default image.</small>
+                        <label for="imageUrl" data-i18n="label_imageUrl">Recipe Image URL</label>
+                        <input type="url" id="imageUrl" name="imageUrl" placeholder="https://example.com/image.jpg">
+                        <small data-i18n="small_image_note">Paste a URL to a food image. Leave blank for default image.</small>
                 </div>
 
                 <div class="form-group">
-                    <label for="ingredients">Ingredients * (one per line)</label>
+                    <label for="ingredients" data-i18n="label_ingredients">Ingredients * (one per line)</label>
                     <textarea id="ingredients" name="ingredients" required placeholder="1 cup rice&#10;2 cups vegetables&#10;1 tbsp oil&#10;..." rows="6"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="steps">Cooking Steps * (one per line)</label>
+                    <label for="steps" data-i18n="label_steps">Cooking Steps * (one per line)</label>
                     <textarea id="steps" name="steps" required placeholder="1. Rinse the rice...&#10;2. Heat the oil...&#10;3. Add vegetables...&#10;..." rows="6"></textarea>
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Save Recipe</button>
-                    <button type="reset" class="btn btn-secondary">Clear Form</button>
-                    <a href="landing.html" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary" data-i18n="btn_save">Save Recipe</button>
+                    <button type="reset" class="btn btn-secondary" data-i18n="btn_clear">Clear Form</button>
+                    <a href="landing.html" class="btn btn-secondary" data-i18n="btn_cancel">Cancel</a>
                 </div>
             </form>
         </section>
     </main>
 
     <footer class="footer">
-        <p>&copy; 2025 Recipe Manager. Built with love for cooking enthusiasts.</p>
+        <p data-i18n="footer">&copy; 2025 Recipe Manager. Built with love for cooking enthusiasts.</p>
     </footer>
 
     <!-- Core scripts -->
+    <script src="../assets/js/i18n.js"></script>
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/storage.js"></script>
     <script src="../assets/js/form.js"></script>
