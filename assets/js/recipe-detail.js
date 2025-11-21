@@ -141,8 +141,6 @@ function loadRecipeDetail() {
         ${!isFromQRCode ? `
           <a href="landing.html" class="btn btn-secondary">Back to Recipes</a>
           <button class="btn btn-primary" onclick="goToEdit('${recipe.id}')">Edit Recipe</button>
-          <button class="btn btn-secondary" onclick="generateQRCode('${recipe.id}')">Share QR Code</button>
-          <button class="btn btn-secondary" onclick="duplicateRecipeFromDetail('${recipe.id}')">Duplicate Recipe</button>
           <button class="btn btn-danger" onclick="deleteAndReturn('${recipe.id}')">Delete Recipe</button>
         ` : ''}
         <button class="btn btn-secondary" onclick="window.print()">🖨️ Print</button>

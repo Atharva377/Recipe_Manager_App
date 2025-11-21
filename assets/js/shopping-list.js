@@ -97,10 +97,27 @@ function printShoppingList() {
  * Download shopping list
  */
 function downloadShoppingList() {
-  const list = loadShoppingList()
-  const text = Object.entries(list)
-    .map(([item, qty]) => `☐ ${item} (x${qty})`)
-    .join('\n')
+  // Prefer DOM state so that checked items (class "checked") are excluded
+  const container = document.getElementById('shoppingListContainer')
+  let lines = []
+  if (container) {
+    const items = container.querySelectorAll('.shopping-item')
+    items.forEach((el) => {
+      if (el.classList.contains('checked')) return // skip selected items
+      const textEl = el.querySelector('.shopping-item-text')
+      const qtyEl = el.querySelector('.shopping-item-quantity')
+      const itemText = textEl ? textEl.textContent.trim() : ''
+      const qtyText = qtyEl ? qtyEl.textContent.replace(/^x/, '').trim() : ''
+      if (itemText) lines.push(`☐ ${itemText} (x${qtyText || 1})`)
+    })
+  }
+
+  // Fallback to storage if nothing in DOM
+  if (lines.length === 0) {
+    const list = loadShoppingList()
+    lines = Object.entries(list).map(([item, qty]) => `☐ ${item} (x${qty})`)
+  }
+  const text = lines.join('\n')
   const blob = new Blob([text], { type: 'text/plain' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')

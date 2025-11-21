@@ -1,5 +1,3 @@
-// Recipe Manager Application - Main Core
-// All data is stored in browser localStorage under 'recipes' key
 
 // ==================== CONSTANTS ====================
 const STORAGE_KEY = "recipes"
@@ -348,21 +346,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
   if (currentPage === "index.html" || currentPage === "" || currentPage === "landing.html") {
-    filterRecipes();
+    // `filterRecipes` is defined in `home.js`. Guard calls to avoid
+    // ReferenceError if `home.js` wasn't loaded yet.
+    if (typeof filterRecipes === "function") {
+      filterRecipes();
 
-    const searchInput = document.getElementById("searchInput");
-    const difficultyFilter = document.getElementById("difficultyFilter");
-    const categoryFilter = document.getElementById("categoryFilter");
-    const prepTimeFilter = document.getElementById("prepTimeFilter");
-    const favoriteFilter = document.getElementById("favoriteFilter");
-    const resetButton = document.getElementById("resetFilters");
+      const searchInput = document.getElementById("searchInput");
+      const difficultyFilter = document.getElementById("difficultyFilter");
+      const categoryFilter = document.getElementById("categoryFilter");
+      const prepTimeFilter = document.getElementById("prepTimeFilter");
+      const favoriteFilter = document.getElementById("favoriteFilter");
+      const resetButton = document.getElementById("resetFilters");
 
-    if (searchInput) searchInput.addEventListener("input", filterRecipes);
-    if (difficultyFilter) difficultyFilter.addEventListener("change", filterRecipes);
-    if (categoryFilter) categoryFilter.addEventListener("change", filterRecipes);
-    if (prepTimeFilter) prepTimeFilter.addEventListener("input", filterRecipes);
-    if (favoriteFilter) favoriteFilter.addEventListener("change", filterRecipes);
-    if (resetButton) resetButton.addEventListener("click", resetFilters);
+      if (searchInput) searchInput.addEventListener("input", filterRecipes);
+      if (difficultyFilter) difficultyFilter.addEventListener("change", filterRecipes);
+      if (categoryFilter) categoryFilter.addEventListener("change", filterRecipes);
+      if (prepTimeFilter) prepTimeFilter.addEventListener("input", filterRecipes);
+      if (favoriteFilter) favoriteFilter.addEventListener("change", filterRecipes);
+      if (resetButton) resetButton.addEventListener("click", resetFilters);
+    }
   } else if (currentPage === "recipe-detail.html") {
     loadRecipeDetail();
   } else if (currentPage === "add-recipe.html") {

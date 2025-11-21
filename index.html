@@ -32,11 +32,51 @@
                 Enter Your Kitchen
                 <span class="arrow">→</span>
             </a>
+            <div>
+                <button id="scanButton" class="scan-button" title="Show QR to scan from mobile">Want to view on mobile? Scan here</button>
+            </div>
         </div>
 
 
     </div>
 
+    <!-- QR Code Modal (moved here so index can generate QR for mobile scanning) -->
+    <div id="qrModal" class="modal" style="display: none; position: fixed; inset:0; align-items:center; justify-content:center; background: rgba(0,0,0,0.6); z-index:1000;">
+        <div class="modal-content" style="background:#fff; color:#111; border-radius:8px; padding:20px; max-width:360px; width:90%; text-align:center; position:relative;">
+            <button class="close-modal" onclick="closeQRModal()" style="position:absolute; right:10px; top:8px; background:none; border:none; font-size:22px; cursor:pointer;">&times;</button>
+            <h3 style="margin-top:6px;">Share Recipe via QR Code</h3>
+            <div id="qrCode" style="text-align: center; padding: 20px;"></div>
+            <p style="text-align: center; color: #666; font-weight: 500; margin:0;">Scan with your mobile device to open the recipe</p>
+            <div id="qrTimer" style="text-align: center; color: #999; font-size: 14px; margin-top: 10px;"></div>
+        </div>
+    </div>
+
+    <!-- QR dependencies and generator (enabled on index page) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/storage.js"></script>
+    <script src="assets/js/qr-code.js"></script>
+    <script>
+        // Handle scan button: use selectedRecipeId stored in sessionStorage
+        document.addEventListener('DOMContentLoaded', function () {
+            const btn = document.getElementById('scanButton');
+            if (!btn) return;
+            btn.addEventListener('click', function () {
+                const selected = sessionStorage.getItem('selectedRecipeId');
+                if (selected) {
+                    // Show QR modal for the stored recipe id
+                    try {
+                        generateQRCode(selected);
+                    } catch (e) {
+                        console.error('Failed to generate QR on index:', e);
+                        alert('Unable to generate QR code.');
+                    }
+                } else {
+                    alert('No recipe selected. Open a recipe detail first or select a recipe to share.');
+                }
+            });
+        });
+    </script>
     <script src="assets/js/indexPage.js"></script>
 </body>
 </html>

@@ -63,7 +63,7 @@ function generateQRCode(recipeId) {
   const currentUrl = window.location.href;
   const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1);
   // Redirect scanners to landing.html (contains logic to read recipe params)
-  const qrUrl = `${baseUrl}landing.html`;
+  const qrUrl = `${baseUrl}pages/landing.html`;
 
   
 

@@ -14,6 +14,11 @@
     display: none !important;
   }
 
+  /* Hide checked/selected shopping items when printing (so they don't appear in PDFs) */
+  .shopping-item.checked {
+    display: none !important;
+  }
+
   .recipe-detail,
   .shopping-list-container {
     box-shadow: none;
@@ -34,6 +39,14 @@
   body {
     background-color: white;
     font-size: 12px;
+  }
+}
+
+/* Hide the 'Want to view on mobile? Scan here' button on small/mobile screens */
+@media (max-width: 600px) {
+  #scanButton,
+  .scan-button {
+    display: none !important;
   }
 }
 
