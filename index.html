@@ -56,27 +56,7 @@
     <script src="assets/js/main.js"></script>
     <script src="assets/js/storage.js"></script>
     <script src="assets/js/qr-code.js"></script>
-    <script>
-        // Handle scan button: use selectedRecipeId stored in sessionStorage
-        document.addEventListener('DOMContentLoaded', function () {
-            const btn = document.getElementById('scanButton');
-            if (!btn) return;
-            btn.addEventListener('click', function () {
-                const selected = sessionStorage.getItem('selectedRecipeId');
-                if (selected) {
-                    // Show QR modal for the stored recipe id
-                    try {
-                        generateQRCode(selected);
-                    } catch (e) {
-                        console.error('Failed to generate QR on index:', e);
-                        alert('Unable to generate QR code.');
-                    }
-                } else {
-                    alert('No recipe selected. Open a recipe detail first or select a recipe to share.');
-                }
-            });
-        });
-    </script>
+    
     <script src="assets/js/indexPage.js"></script>
 </body>
 </html>

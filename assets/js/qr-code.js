@@ -40,41 +40,47 @@ function generateQRCode(recipeId) {
   // Ensure modal is visible before rendering QR so sizing works
   modal.style.display = "flex";
 
-  // Get the full recipe data
-  const recipes = loadRecipes();
-  const recipe = recipes.find(r => String(r.id) === String(recipeId));
-  
-  if (!recipe) {
-    showError("Recipe not found");
-    return;
-  }
-
-  // Embed the entire recipe in the QR code
-  const recipeData = JSON.stringify({ 
-    recipe: recipe,
-    app: "RecipeManager" 
-  });
-  const encodedData = base64EncodeUnicode(recipeData);
-  
-  console.log("Recipe to encode:", recipe.title);
-  console.log("Encoded data length:", encodedData.length);
-  
   // Generate the correct URL for the landing page (scanners should land on Home)
   const currentUrl = window.location.href;
   const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1);
-  // Redirect scanners to landing.html (contains logic to read recipe params)
   const qrUrl = `${baseUrl}pages/landing.html`;
 
-  
-
-  // If the encoded data is very large, prefer the small QR to avoid library limits
-  const MAX_QR_PAYLOAD = 1000; // bytes - conservative threshold
+  // If no recipeId provided, render a landing-only QR so phones will open the listing
   let qrTextToRender = qrUrl;
   let usedSmallFallback = false;
-  if (encodedData.length > MAX_QR_PAYLOAD) {
-    console.warn("Encoded recipe data is large; using ID-only QR fallback");
-    qrTextToRender = qrUrl;
-    usedSmallFallback = true;
+  if (recipeId) {
+    // Get the full recipe data
+    const recipes = loadRecipes();
+    const recipe = recipes.find(r => String(r.id) === String(recipeId));
+
+    if (recipe) {
+      // Embed the entire recipe in the QR code when possible
+      const recipeData = JSON.stringify({
+        recipe: recipe,
+        app: "RecipeManager"
+      });
+      const encodedData = base64EncodeUnicode(recipeData);
+      console.log("Recipe to encode:", recipe.title);
+      console.log("Encoded data length:", encodedData.length);
+
+      // Prefer sending users to landing page which reads params, but keep payload if small
+      const MAX_QR_PAYLOAD = 1000; // bytes - conservative threshold
+      if (encodedData.length <= MAX_QR_PAYLOAD) {
+        // Some scanners/apps may not follow deep payloads — using URL-only is safest.
+        // To avoid compatibility issues, keep qrTextToRender as qrUrl (landing page).
+        // If you prefer embedding the payload in the URL, we could append ?recipe=...
+        // For now we intentionally point scanners to landing page only.
+        qrTextToRender = qrUrl;
+      } else {
+        console.warn("Encoded recipe data is large; using landing-only QR fallback");
+        qrTextToRender = qrUrl;
+        usedSmallFallback = true;
+      }
+    } else {
+      // Recipe ID provided but not found — fall back to landing page
+      console.warn('Requested recipeId not found; rendering landing QR instead');
+      qrTextToRender = qrUrl;
+    }
   }
 
   console.log("Generated QR URL (landing):", qrUrl);
