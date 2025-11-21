@@ -8,9 +8,10 @@ function loadRecipeDetail() {
   }
   
   console.log("Loading recipe detail");
-  console.log("Recipe ID from URL:", getRecipeIdFromURL());
+  console.log("Recipe ID from URL:", recipeId);
   console.log("Recipe ID from sessionStorage:", sessionStorage.getItem("selectedRecipeId"));
   console.log("Final recipe ID to use:", recipeId);
+  console.log("Recipe ID type:", typeof recipeId);
 
   if (!recipeId) {
     console.error("No recipe ID found");

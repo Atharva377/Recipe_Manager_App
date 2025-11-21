@@ -345,25 +345,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeStorage();
   initializeMealPlanStorage();
 
-  // Handle recipe loading from URL parameters for any page that might need it
-  const urlParams = new URLSearchParams(window.location.search);
-  const recipeParam = urlParams.get('recipe');
-  
-  if (recipeParam) {
-    try {
-      const decodedData = atob(recipeParam);
-      const recipeData = JSON.parse(decodedData);
-      console.log("Recipe data from URL:", recipeData);
-      
-      // Store in sessionStorage for consistency
-      if (recipeData.recipeId) {
-        sessionStorage.setItem("selectedRecipeId", recipeData.recipeId);
-      }
-    } catch (error) {
-      console.error("Error processing recipe from URL:", error);
-    }
-  }
-
   const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
   if (currentPage === "index.html" || currentPage === "" || currentPage === "landing.html") {
