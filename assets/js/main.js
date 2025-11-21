@@ -297,9 +297,6 @@ function showSuccess(message) {
  * Get difficulty badge class
  */
 function getDifficultyClass(difficulty) {
-  if (typeof difficulty !== "string" || difficulty.trim() === "") {
-    return "difficulty-unknown"
-  }
   const className = `difficulty-${difficulty.toLowerCase()}`
   return className
 }
@@ -320,8 +317,6 @@ function formatTime(minutes) {
  * Escape HTML to prevent XSS
  */
 function escapeHtml(text) {
-  if (text === null || text === undefined) return ""
-  const str = String(text)
   const map = {
     "&": "&amp;",
     "<": "&lt;",
@@ -329,7 +324,7 @@ function escapeHtml(text) {
     '"': "&quot;",
     "'": "&#039;",
   }
-  return str.replace(/[&<>\"']/g, (m) => map[m])
+  return text.replace(/[&<>"']/g, (m) => map[m])
 }
 
 /**
@@ -347,79 +342,54 @@ function isValidUrl(string) {
 // ==================== EVENT LISTENERS ====================
 
 document.addEventListener("DOMContentLoaded", () => {
-  initializeStorage()
-  initializeMealPlanStorage()
+  initializeStorage();
+  initializeMealPlanStorage();
 
-  // Handle QR `?recipe=` parameter: decode and set sessionStorage, then ensure we're on recipe-detail page
-  try {
-    const params = new URLSearchParams(window.location.search)
-    if (params.has("recipe")) {
-      const encoded = params.get("recipe")
-      const decoded = atob(encoded)
-      const parsed = JSON.parse(decoded)
-
-      // If the payload contains a full recipe object, persist it to localStorage so it is available on this device
-      if (parsed && parsed.recipe) {
-        try {
-          const incoming = parsed.recipe
-          const recipes = loadRecipes()
-          // Ensure id is string
-          incoming.id = incoming.id !== undefined && incoming.id !== null ? String(incoming.id) : String(generateId())
-          const exists = recipes.find((r) => String(r.id) === String(incoming.id))
-          if (!exists) {
-            recipes.push(incoming)
-            saveRecipes(recipes)
-          }
-          sessionStorage.setItem("selectedRecipeId", String(incoming.id))
-        } catch (e) {
-          console.error("Failed to persist incoming recipe:", e)
-        }
-      } else if (parsed && parsed.recipeId) {
-        sessionStorage.setItem("selectedRecipeId", String(parsed.recipeId))
+  // Handle recipe loading from URL parameters for any page that might need it
+  const urlParams = new URLSearchParams(window.location.search);
+  const recipeParam = urlParams.get('recipe');
+  
+  if (recipeParam) {
+    try {
+      const decodedData = atob(recipeParam);
+      const recipeData = JSON.parse(decodedData);
+      console.log("Recipe data from URL:", recipeData);
+      
+      // Store in sessionStorage for consistency
+      if (recipeData.recipeId) {
+        sessionStorage.setItem("selectedRecipeId", recipeData.recipeId);
       }
-
-      // If not already on recipe-detail page, navigate there so loadRecipeDetail runs
-      const currentPage = window.location.pathname.split("/").pop() || "index.html"
-      if (currentPage !== "recipe-detail.html") {
-        const pathSegments = window.location.pathname.split("/").filter(Boolean)
-        let baseDir = "/"
-        if (pathSegments.length > 0 && pathSegments[0] !== "pages") {
-          baseDir = `/${pathSegments[0]}/`
-        }
-        window.location.href = window.location.origin + baseDir + "pages/recipe-detail.html"
-        return
-      }
+    } catch (error) {
+      console.error("Error processing recipe from URL:", error);
     }
-  } catch (err) {
-    console.error("Failed to parse recipe param:", err)
   }
 
-  const currentPage = window.location.pathname.split("/").pop() || "index.html"
+  const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
   if (currentPage === "index.html" || currentPage === "" || currentPage === "landing.html") {
-    filterRecipes()
+    filterRecipes();
 
-    const searchInput = document.getElementById("searchInput")
-    const difficultyFilter = document.getElementById("difficultyFilter")
-    const categoryFilter = document.getElementById("categoryFilter")
-    const prepTimeFilter = document.getElementById("prepTimeFilter")
-    const favoriteFilter = document.getElementById("favoriteFilter")
-    const resetButton = document.getElementById("resetFilters")
+    const searchInput = document.getElementById("searchInput");
+    const difficultyFilter = document.getElementById("difficultyFilter");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const prepTimeFilter = document.getElementById("prepTimeFilter");
+    const favoriteFilter = document.getElementById("favoriteFilter");
+    const resetButton = document.getElementById("resetFilters");
 
-    if (searchInput) searchInput.addEventListener("input", filterRecipes)
-    if (difficultyFilter) difficultyFilter.addEventListener("change", filterRecipes)
-    if (categoryFilter) categoryFilter.addEventListener("change", filterRecipes)
-    if (prepTimeFilter) prepTimeFilter.addEventListener("input", filterRecipes)
-    if (favoriteFilter) favoriteFilter.addEventListener("change", filterRecipes)
-    if (resetButton) resetButton.addEventListener("click", resetFilters)
+    if (searchInput) searchInput.addEventListener("input", filterRecipes);
+    if (difficultyFilter) difficultyFilter.addEventListener("change", filterRecipes);
+    if (categoryFilter) categoryFilter.addEventListener("change", filterRecipes);
+    if (prepTimeFilter) prepTimeFilter.addEventListener("input", filterRecipes);
+    if (favoriteFilter) favoriteFilter.addEventListener("change", filterRecipes);
+    if (resetButton) resetButton.addEventListener("click", resetFilters);
   } else if (currentPage === "recipe-detail.html") {
-    loadRecipeDetail()
+    loadRecipeDetail();
   } else if (currentPage === "add-recipe.html") {
-    initializeForm()
+    initializeForm();
   } else if (currentPage === "meal-plan.html") {
-    const weekStart = getCurrentWeekStart()
-    displayMealPlan(weekStart)
+    const weekStart = getCurrentWeekStart();
+    displayMealPlan(weekStart);
   } else if (currentPage === "shopping-list.html") {
-    displayShoppingList()
+    displayShoppingList();
   }
-})
+});

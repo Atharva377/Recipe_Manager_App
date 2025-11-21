@@ -1,49 +1,56 @@
 function loadRecipeDetail() {
-  // Get recipe ID from sessionStorage
-  let recipeId = sessionStorage.getItem("selectedRecipeId")
+  // First, check if we have a recipe ID in URL parameters (from QR code)
+  let recipeId = getRecipeIdFromURL();
   
-  console.log("Loading recipe detail")
-  console.log("Recipe ID from selectedRecipeId:", recipeId)
+  // If not in URL, check sessionStorage (from normal navigation)
+  if (!recipeId) {
+    recipeId = sessionStorage.getItem("selectedRecipeId");
+  }
+  
+  console.log("Loading recipe detail");
+  console.log("Recipe ID from URL:", getRecipeIdFromURL());
+  console.log("Recipe ID from sessionStorage:", sessionStorage.getItem("selectedRecipeId"));
+  console.log("Final recipe ID to use:", recipeId);
 
   if (!recipeId) {
-    console.error("No recipe ID found in sessionStorage")
-    showError("Recipe not found. Redirecting to home...")
+    console.error("No recipe ID found");
+    showError("Recipe not found. Redirecting to home...");
     setTimeout(() => {
-      window.location.href = "landing.html"
-    }, 2000)
-    return
+      window.location.href = "landing.html";
+    }, 2000);
+    return;
   }
 
-  // Keep recipeId as string to avoid precision/type issues
-  console.log("Selected recipe ID (raw):", recipeId)
+  // Store the recipe ID in sessionStorage for consistency
+  sessionStorage.setItem("selectedRecipeId", recipeId);
 
-  const detailContainer = document.getElementById("recipeDetail")
+  const detailContainer = document.getElementById("recipeDetail");
   if (!detailContainer) {
-    console.error("recipeDetail container not found")
-    return
+    console.error("recipeDetail container not found");
+    return;
   }
 
-  const recipes = loadRecipes()
-  console.log("Total recipes in storage:", recipes.length)
-  console.log("All recipe IDs:", recipes.map(r => r.id))
+  const recipes = loadRecipes();
+  console.log("Total recipes in storage:", recipes.length);
+  console.log("All recipe IDs:", recipes.map(r => r.id));
 
-  // Find recipe using string comparison to be robust across browsers
-  const recipe = recipes.find((r) => String(r.id) === String(recipeId))
+  // Find recipe using string comparison
+  const recipe = recipes.find((r) => String(r.id) === String(recipeId));
 
   if (!recipe) {
-    console.error("Recipe not found for ID:", recipeId)
-    showError("Recipe not found. Redirecting to home...")
+    console.error("Recipe not found for ID:", recipeId);
+    showError("Recipe not found. Redirecting to home...");
     setTimeout(() => {
-      window.location.href = "landing.html"
-    }, 2000)
-    return
+      window.location.href = "landing.html";
+    }, 2000);
+    return;
   }
 
-  console.log("Recipe found:", recipe.title)
+  console.log("Recipe found:", recipe.title);
 
-  const imageUrl = recipe.imageUrl || DEFAULT_IMAGE
-  const totalTime = recipe.prepTime + recipe.cookTime
-  const tagsHtml = (recipe.tags || []).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")
+  const imageUrl = recipe.imageUrl || DEFAULT_IMAGE;
+  const totalTime = recipe.prepTime + recipe.cookTime;
+  const tagsHtml = (recipe.tags || []).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("");
 
   const nutritionHtml = recipe.nutrition
     ? `
@@ -66,10 +73,10 @@ function loadRecipeDetail() {
       </div>
     </div>
   `
-    : ""
+    : "";
 
-  const stepsHtml = recipe.steps.map((step, index) => `<li data-step="${index + 1}">${escapeHtml(step)}</li>`).join("")
-  const ingredientsHtml = recipe.ingredients.map((ingredient) => `<li>✓ ${escapeHtml(ingredient)}</li>`).join("")
+  const stepsHtml = recipe.steps.map((step, index) => `<li data-step="${index + 1}">${escapeHtml(step)}</li>`).join("");
+  const ingredientsHtml = recipe.ingredients.map((ingredient) => `<li>✓ ${escapeHtml(ingredient)}</li>`).join("");
 
   detailContainer.innerHTML = `
     <div class="recipe-detail-header">
@@ -122,17 +129,17 @@ function loadRecipeDetail() {
         <button class="btn btn-secondary" onclick="window.print()">🖨️ Print</button>
       </div>
     </div>
-  `
+  `;
 
-  displayRecipeRating(recipe)
+  displayRecipeRating(recipe);
 }
 
 /**
  * Go to edit page
  */
 function goToEdit(recipeId) {
-  sessionStorage.setItem("editRecipeId", recipeId)
-  window.location.href = "add-recipe.html"
+  sessionStorage.setItem("editRecipeId", recipeId);
+  window.location.href = "add-recipe.html";
 }
 
 /**
@@ -140,17 +147,17 @@ function goToEdit(recipeId) {
  */
 function deleteAndReturn(recipeId) {
   if (!confirm("Are you sure you want to delete this recipe?")) {
-    return
+    return;
   }
 
   try {
-    let recipes = loadRecipes()
-    recipes = recipes.filter((r) => String(r.id) !== String(recipeId))
-    saveRecipes(recipes)
-    sessionStorage.removeItem("selectedRecipeId")
-    window.location.href = "landing.html"
+    let recipes = loadRecipes();
+    recipes = recipes.filter((r) => String(r.id) !== String(recipeId));
+    saveRecipes(recipes);
+    sessionStorage.removeItem("selectedRecipeId");
+    window.location.href = "landing.html";
   } catch (error) {
-    showError("Failed to delete recipe.")
+    showError("Failed to delete recipe.");
   }
 }
 
@@ -158,12 +165,12 @@ function deleteAndReturn(recipeId) {
  * Duplicate recipe from detail page
  */
 function duplicateRecipeFromDetail(recipeId) {
-  const recipes = loadRecipes()
-  const recipe = recipes.find((r) => String(r.id) === String(recipeId))
+  const recipes = loadRecipes();
+  const recipe = recipes.find((r) => String(r.id) === String(recipeId));
 
   if (!recipe) {
-    showError("Recipe not found.")
-    return
+    showError("Recipe not found.");
+    return;
   }
 
   const duplicatedRecipe = {
@@ -173,13 +180,13 @@ function duplicateRecipeFromDetail(recipeId) {
     createdAt: new Date().toISOString(),
     isFavorite: false,
     rating: 0,
-  }
+  };
 
-  recipes.push(duplicatedRecipe)
-  saveRecipes(recipes)
-  showSuccess(`Recipe "${recipe.title}" duplicated successfully!`)
+  recipes.push(duplicatedRecipe);
+  saveRecipes(recipes);
+  showSuccess(`Recipe "${recipe.title}" duplicated successfully!`);
   
   setTimeout(() => {
-    window.location.href = "landing.html"
-  }, 1500)
+    window.location.href = "landing.html";
+  }, 1500);
 }
