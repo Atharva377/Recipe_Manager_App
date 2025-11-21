@@ -128,9 +128,6 @@ However, in other browsers, only the Veg Biryani recipe appears, and the remaini
 
 ### 🎯 Advanced Recipe Management
 - **Smart Search & Filtering** - Perform searches in real time by title/description with multiple filter options
-- **Recipe Duplication** - One-click copy a recipe to create variations
-- **Favorites System** - Mark a recipe as a favorite with a heart and get visual feedback
-- **5-Star Rating System** - During any rating process, the rating persists when you re-enter the recipe
 - **Nutrition Tracking** - All nutritional information for each recipe (counting calories, protein, carbs, fat)
 
 ### 📱 QR Code Integration
