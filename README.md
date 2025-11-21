@@ -1,5 +1,7 @@
 # CookBook by Atharva-Your Personal Recipe Collection
 
+A project built with a strong focus on Outcome, Accountability, and delivering a highly User-Friendly experience.
+
 A fully functional, browser-based recipe management application built with vanilla HTML, CSS, and JavaScript. Manage, search, organize recipes, plan meals, and generate shopping lists—all in your browser with no server required.
 
 **Go to Atharva's CookBook:** https://atharva377.github.io/Recipe_Manager_App/
@@ -99,19 +101,23 @@ However, in other browsers, only the Veg Biryani recipe appears, and the remaini
 **Problem:** If you've added many recipes with long descriptions, you may hit your browser storage limit.
 **Temporary Solution:** Either delete any recipes you don't use, or have fewer high-definition images stored.
 
-### 4. Data Loss from Clearing Browser
+### 4. Shopping List Not Generated
+**Problem:** The shopping list will not generate if no meals or ingredients are selected in the meal planner.
+**Temporary Solution:** Add at least one recipe/meal to the planner before attempting to generate the shopping list.
+
+### 5. Data Loss from Clearing Browser
 **Problem:** If you clear your browser cache/cookies, all recipes stored in localStorage will be deleted.
 **Temporary Solution:** Manually keep track of and record any important recipe.
 
-### 5. Corrupting Data
+### 6. Corrupting Data
 **Problem:** In the unlikely event something gets corrupted in the localStorage, the app may not work at all.
 **Temporary Solution:** In the browser, open DevTools (F12) → Application → Storage → Clear localStorage. Reload the page to get a fresh data resync of the app.
 
-### 6. Special Characters in Titles
+### 7. Special Characters in Titles
 **Problem:** In some cases, special characters in the recipe title may not display properly.
 **Temporary Solution:** Use standard alphanumeric characters, spaces, and basic punctuation only.
 
-### 7. Mobile Keyboard Layout
+### 8. Mobile Keyboard Layout
 **Problem:** On mobile the keyboard may overlap the input fields.
 **Temporary Solution:** The app is responsive and scrollable, scroll after you click on the input fields!
 
@@ -125,10 +131,8 @@ However, in other browsers, only the Veg Biryani recipe appears, and the remaini
 - **Nutrition Tracking** - All nutritional information for each recipe (counting calories, protein, carbs, fat)
 
 ### 📱 QR Code Integration
-- **Dynamic QR Generation** - Generate a scannable QR code for any recipe
+- **Dynamic QR Generation** - Generate a scannable QR code for viewing the website on mobile devices
 - **30 Second Timer** - QR codes will close automatically after 30 seconds and show a countdown clock
-- **Mobile Sharing** - "Scan for recipe from your phone" capability
-- **Recipe-Specific Codes** - Each QR code leads directly to specific details of that recipe
 
 ### 🔄 Data Management
 - **Export/Import System** - Full JSON backup/restore functionality
