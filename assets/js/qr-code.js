@@ -42,14 +42,13 @@ function generateQRCode(recipeId) {
   }
   const detailPath = `${baseDir}pages/recipe-detail.html`
   const baseUrl = window.location.origin + detailPath
-  const qrUrl = `${baseUrl}?recipe=${encodedData}`
 
   // Declare QRCode variable before using it
   const QRCode = window.QRCode
 
   if (typeof QRCode !== "undefined") {
     new QRCode(qrCodeDiv, {
-      text: qrUrl,
+      text: baseUrl,
       width: 250,
       height: 250,
       colorDark: "#000000",
