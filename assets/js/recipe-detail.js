@@ -1,29 +1,54 @@
 function loadRecipeDetail() {
-  // First, check if we have a recipe ID in URL parameters (from QR code)
-  let recipeId = getRecipeIdFromURL();
-  
-  // If not in URL, check sessionStorage (from normal navigation)
-  if (!recipeId) {
-    recipeId = sessionStorage.getItem("selectedRecipeId");
-  }
+  // First, check if we have recipe data in URL parameters (from QR code)
+  let recipeFromURL = getRecipeFromURL();
+  let recipe = null;
   
   console.log("Loading recipe detail");
-  console.log("Recipe ID from URL:", recipeId);
-  console.log("Recipe ID from sessionStorage:", sessionStorage.getItem("selectedRecipeId"));
-  console.log("Final recipe ID to use:", recipeId);
-  console.log("Recipe ID type:", typeof recipeId);
+  console.log("Recipe from URL:", recipeFromURL);
+  
+  if (recipeFromURL && recipeFromURL.title) {
+    // We have full recipe data from URL (QR code scan from another device)
+    console.log("Using full recipe data from URL");
+    recipe = recipeFromURL;
+  } else {
+    // Try to get recipe ID from URL or sessionStorage
+    let recipeId = recipeFromURL ? recipeFromURL.id : sessionStorage.getItem("selectedRecipeId");
+    
+    console.log("Recipe ID from sessionStorage:", sessionStorage.getItem("selectedRecipeId"));
+    console.log("Final recipe ID to use:", recipeId);
+    console.log("Recipe ID type:", typeof recipeId);
 
-  if (!recipeId) {
-    console.error("No recipe ID found");
-    showError("Recipe not found. Redirecting to home...");
-    setTimeout(() => {
-      window.location.href = "landing.html";
-    }, 2000);
-    return;
+    if (!recipeId) {
+      console.error("No recipe ID found");
+      showError("Recipe not found. Redirecting to home...");
+      setTimeout(() => {
+        window.location.href = "landing.html";
+      }, 20000);
+      return;
+    }
+
+    // Store the recipe ID in sessionStorage for consistency
+    sessionStorage.setItem("selectedRecipeId", recipeId);
+
+    // Load recipes from localStorage
+    const recipes = loadRecipes();
+    console.log("Total recipes in storage:", recipes.length);
+    console.log("All recipe IDs:", recipes.map(r => r.id));
+
+    // Find recipe using string comparison
+    recipe = recipes.find((r) => String(r.id) === String(recipeId));
+
+    if (!recipe) {
+      console.error("Recipe not found for ID:", recipeId);
+      showError("Recipe not found. Redirecting to home...");
+      setTimeout(() => {
+        window.location.href = "landing.html";
+      }, 20000);
+      return;
+    }
   }
 
-  // Store the recipe ID in sessionStorage for consistency
-  sessionStorage.setItem("selectedRecipeId", recipeId);
+  console.log("Recipe found:", recipe.title);
 
   const detailContainer = document.getElementById("recipeDetail");
   if (!detailContainer) {
@@ -31,27 +56,12 @@ function loadRecipeDetail() {
     return;
   }
 
-  const recipes = loadRecipes();
-  console.log("Total recipes in storage:", recipes.length);
-  console.log("All recipe IDs:", recipes.map(r => r.id));
-
-  // Find recipe using string comparison
-  const recipe = recipes.find((r) => String(r.id) === String(recipeId));
-
-  if (!recipe) {
-    console.error("Recipe not found for ID:", recipeId);
-    showError("Recipe not found. Redirecting to home...");
-    setTimeout(() => {
-      window.location.href = "landing.html";
-    }, 2000);
-    return;
-  }
-
-  console.log("Recipe found:", recipe.title);
-
   const imageUrl = recipe.imageUrl || DEFAULT_IMAGE;
   const totalTime = recipe.prepTime + recipe.cookTime;
   const tagsHtml = (recipe.tags || []).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("");
+
+  // Check if this is from a QR code (no localStorage access)
+  const isFromQRCode = recipeFromURL && recipeFromURL.title;
 
   const nutritionHtml = recipe.nutrition
     ? `
@@ -98,12 +108,18 @@ function loadRecipeDetail() {
 
       ${tagsHtml ? `<div class="recipe-detail-section"><strong>Tags:</strong><div class="tags-container">${tagsHtml}</div></div>` : ""}
 
+      ${!isFromQRCode ? `
       <div class="recipe-detail-section">
         <div id="recipeRating"></div>
         <button class="favorite-btn ${recipe.isFavorite ? "active" : ""}" onclick="toggleFavorite('${recipe.id}'); location.reload();">
           ${recipe.isFavorite ? "❤️ Favorited" : "🤍 Add to Favorites"}
         </button>
       </div>
+      ` : `
+      <div class="recipe-detail-section">
+        <p style="color: #666; font-style: italic;">📱 Viewing via QR code - Some features are limited</p>
+      </div>
+      `}
 
       ${nutritionHtml}
 
@@ -122,17 +138,21 @@ function loadRecipeDetail() {
       </div>
 
       <div class="recipe-detail-actions">
-        <a href="landing.html" class="btn btn-secondary">Back to Recipes</a>
-        <button class="btn btn-primary" onclick="goToEdit('${recipe.id}')">Edit Recipe</button>
-        <button class="btn btn-secondary" onclick="generateQRCode('${recipe.id}')">Share QR Code</button>
-        <button class="btn btn-secondary" onclick="duplicateRecipeFromDetail('${recipe.id}')">Duplicate Recipe</button>
-        <button class="btn btn-danger" onclick="deleteAndReturn('${recipe.id}')">Delete Recipe</button>
+        ${!isFromQRCode ? `
+          <a href="landing.html" class="btn btn-secondary">Back to Recipes</a>
+          <button class="btn btn-primary" onclick="goToEdit('${recipe.id}')">Edit Recipe</button>
+          <button class="btn btn-secondary" onclick="generateQRCode('${recipe.id}')">Share QR Code</button>
+          <button class="btn btn-secondary" onclick="duplicateRecipeFromDetail('${recipe.id}')">Duplicate Recipe</button>
+          <button class="btn btn-danger" onclick="deleteAndReturn('${recipe.id}')">Delete Recipe</button>
+        ` : ''}
         <button class="btn btn-secondary" onclick="window.print()">🖨️ Print</button>
       </div>
     </div>
   `;
 
-  displayRecipeRating(recipe);
+  if (!isFromQRCode) {
+    displayRecipeRating(recipe);
+  }
 }
 
 /**
