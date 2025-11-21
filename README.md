@@ -117,9 +117,9 @@ However, in other browsers, only the Veg Biryani recipe appears, and the remaini
 **Problem:** In some cases, special characters in the recipe title may not display properly.
 **Temporary Solution:** Use standard alphanumeric characters, spaces, and basic punctuation only.
 
-### 8. Mobile Keyboard Layout
-**Problem:** On mobile the keyboard may overlap the input fields.
-**Temporary Solution:** The app is responsive and scrollable, scroll after you click on the input fields!
+### 8. Missing or Broken Recipe Image
+**Problem:** If a recipe image URL is invalid, unavailable, or fails to load, the image will not display correctly.
+**Temporary Solution:** The app will automatically fall back to a default placeholder image when the provided image URL cannot be loaded.
 
 ## 🌟 Unique Features Implemented
 
@@ -131,7 +131,7 @@ However, in other browsers, only the Veg Biryani recipe appears, and the remaini
 - **Nutrition Tracking** - All nutritional information for each recipe (counting calories, protein, carbs, fat)
 
 ### 📱 QR Code Integration
-- **Dynamic QR Generation** - Generate a scannable QR code for viewing the website on mobile devices
+- **Dynamic QR Generation** - Generate a scannable QR code for viewing the website on mobile
 - **30 Second Timer** - QR codes will close automatically after 30 seconds and show a countdown clock
 
 ### 🔄 Data Management
