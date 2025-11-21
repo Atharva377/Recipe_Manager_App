@@ -21,9 +21,29 @@ function initializeForm() {
       formTitle.textContent = "Edit Recipe"
       populateForm(recipe)
     }
+    else {
+      // If the id doesn't map to a recipe, clear the stale edit id
+      try {
+        sessionStorage.removeItem("editRecipeId")
+      } catch (e) {
+        console.warn("Failed to clear stale editRecipeId:", e)
+      }
+    }
   }
 
   form.addEventListener("submit", handleFormSubmit)
+
+  // If user clicks cancel, clear edit state to avoid accidentally reopening edit mode
+  const cancelBtn = document.getElementById("cancelBtn")
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", function () {
+      try {
+        sessionStorage.removeItem("editRecipeId")
+      } catch (e) {
+        console.warn("Failed to clear editRecipeId on cancel:", e)
+      }
+    })
+  }
 }
 
 /**

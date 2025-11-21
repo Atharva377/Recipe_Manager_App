@@ -315,6 +315,7 @@ function formatTime(minutes) {
  * Escape HTML to prevent XSS
  */
 function escapeHtml(text) {
+  const str = text === undefined || text === null ? "" : String(text)
   const map = {
     "&": "&amp;",
     "<": "&lt;",
@@ -322,7 +323,7 @@ function escapeHtml(text) {
     '"': "&quot;",
     "'": "&#039;",
   }
-  return text.replace(/[&<>"']/g, (m) => map[m])
+  return str.replace(/[&<>"']/g, (m) => map[m])
 }
 
 /**
@@ -346,6 +347,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
   if (currentPage === "index.html" || currentPage === "" || currentPage === "landing.html") {
+    // Clear any stale edit state when returning to the home/landing page
+    try { sessionStorage.removeItem("editRecipeId") } catch (e) { /* ignore */ }
+
     // `filterRecipes` is defined in `home.js`. Guard calls to avoid
     // ReferenceError if `home.js` wasn't loaded yet.
     if (typeof filterRecipes === "function") {

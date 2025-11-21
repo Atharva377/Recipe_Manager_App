@@ -231,6 +231,21 @@ a:hover {
   border-color: var(--color-primary);
 }
 
+/* Improve appearance of checkbox filters (favorites) */
+.filter-group input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  transform: translateY(3px);
+  accent-color: var(--color-primary);
+}
+
+.filter-group label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 /* Buttons - Mobile Optimized */
 .btn {
   padding: var(--spacing-md) var(--spacing-lg);
@@ -309,6 +324,26 @@ a:hover {
   box-shadow: var(--shadow-lg);
 }
 
+/* Favorite button styling (used on cards and detail) */
+.favorite-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+.favorite-btn:hover {
+  background-color: rgba(217, 119, 6, 0.06);
+  transform: translateY(-1px);
+}
+.favorite-btn.active {
+  color: #ef4444; /* red */
+  background-color: rgba(239, 68, 68, 0.06);
+  border-color: rgba(239, 68, 68, 0.12);
+}
+
 .recipe-card-image {
   width: 100%;
   height: 180px;
@@ -322,6 +357,30 @@ a:hover {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
+}
+
+/* Responsive grid: 2 columns on tablets, 3 on small desktops, 4 on large screens */
+@media (min-width: 600px) {
+  .controls {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+  }
+  .search-box { flex: 1 1 40%; min-width: 220px; }
+  .filter-group { flex: 1 1 20%; min-width: 160px; }
+  .recipes-grid { grid-template-columns: repeat(2, 1fr); }
+  .recipe-card-image { height: 200px; }
+}
+
+@media (min-width: 900px) {
+  .recipes-grid { grid-template-columns: repeat(3, 1fr); }
+  .recipe-card-image { height: 220px; }
+}
+
+@media (min-width: 1200px) {
+  .recipes-grid { grid-template-columns: repeat(4, 1fr); }
+  .recipe-card-image { height: 240px; }
 }
 
 .recipe-card-title {

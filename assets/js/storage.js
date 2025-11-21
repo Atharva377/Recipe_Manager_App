@@ -6,13 +6,31 @@
 function initializeStorage() {
   try {
     const existingRecipes = localStorage.getItem(STORAGE_KEY)
-    if (!existingRecipes || JSON.parse(existingRecipes).length === 0) {
-      const initialRecipes = DEFAULT_RECIPES
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(initialRecipes))
+    if (!existingRecipes) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_RECIPES))
+      return
+    }
+
+    // If the stored value is present but not valid JSON/array, attempt to recover
+    try {
+      const parsed = JSON.parse(existingRecipes)
+      if (!Array.isArray(parsed) || parsed.length === 0) {
+        // replace empty/non-array storage with defaults
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_RECIPES))
+      }
+    } catch (parseError) {
+      // Backup corrupted data to a separate key for inspection and restore defaults
+      try {
+        localStorage.setItem(`${STORAGE_KEY}_corrupted_backup`, existingRecipes)
+      } catch (backupErr) {
+        console.warn("Failed to backup corrupted recipes data:", backupErr)
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_RECIPES))
+      console.warn("Corrupted recipes data found — backed up and restored defaults.")
     }
   } catch (error) {
     console.error("Error initializing storage:", error)
-    showError("Failed to initialize storage. Please clear browser data and try again.")
+    showError("Failed to initialize storage. Default recipes may not be available.")
   }
 }
 
@@ -42,7 +60,21 @@ function loadRecipes() {
       return []
     }
     // normalize parsed recipes to avoid type/format issues across browsers
-    const parsed = JSON.parse(recipes)
+    let parsed = []
+    try {
+      parsed = JSON.parse(recipes)
+    } catch (err) {
+      console.error("Failed to parse recipes from storage:", err)
+      showError("Saved recipes are corrupted. Restoring default recipes.")
+      // attempt recovery by restoring defaults
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_RECIPES))
+        parsed = DEFAULT_RECIPES
+      } catch (writeErr) {
+        console.error("Failed to restore default recipes:", writeErr)
+        return []
+      }
+    }
     if (!Array.isArray(parsed)) return []
     return parsed.map((r) => {
       const recipe = r || {}
