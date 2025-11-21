@@ -1036,39 +1036,5 @@ a:hover {
   font-size: 0.95rem;
 }
 
-/* Print styles */
-@media print {
-  nav,
-  footer,
-  .controls,
-  .btn,
-  .filter-group,
-  .recipe-card-actions,
-  .recipe-detail-actions,
-  .shopping-list-controls {
-    display: none !important;
-  }
 
-  .recipe-detail,
-  .shopping-list-container {
-    box-shadow: none;
-    border: 1px solid #ccc;
-    page-break-inside: avoid;
-  }
-
-  .recipe-detail-header {
-    height: 200px;
-  }
-
-  .shopping-item input[type="checkbox"] {
-    margin-right: 20px;
-    width: 16px;
-    height: 16px;
-  }
-
-  body {
-    background-color: white;
-    font-size: 12px;
-  }
-}
 
