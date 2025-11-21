@@ -350,6 +350,32 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeStorage()
   initializeMealPlanStorage()
 
+  // Handle QR `?recipe=` parameter: decode and set sessionStorage, then ensure we're on recipe-detail page
+  try {
+    const params = new URLSearchParams(window.location.search)
+    if (params.has("recipe")) {
+      const encoded = params.get("recipe")
+      const decoded = atob(encoded)
+      const parsed = JSON.parse(decoded)
+      if (parsed && parsed.recipeId) {
+        sessionStorage.setItem("selectedRecipeId", String(parsed.recipeId))
+        // If not already on recipe-detail page, navigate there so loadRecipeDetail runs
+        const currentPage = window.location.pathname.split("/").pop() || "index.html"
+        if (currentPage !== "recipe-detail.html") {
+          const pathSegments = window.location.pathname.split("/").filter(Boolean)
+          let baseDir = "/"
+          if (pathSegments.length > 0 && pathSegments[0] !== "pages") {
+            baseDir = `/${pathSegments[0]}/`
+          }
+          window.location.href = window.location.origin + baseDir + "pages/recipe-detail.html"
+          return
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Failed to parse recipe param:", err)
+  }
+
   const currentPage = window.location.pathname.split("/").pop() || "index.html"
 
   if (currentPage === "index.html" || currentPage === "" || currentPage === "landing.html") {

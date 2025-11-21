@@ -14,7 +14,16 @@ function generateQRCode(recipeId) {
 
   const recipeData = JSON.stringify({ recipeId, app: "RecipeManager" })
   const encodedData = btoa(recipeData)
-  const baseUrl = window.location.origin + window.location.pathname.replace(/[^/]*$/, "")
+
+  // Build a robust URL that always points to the recipe detail page
+  // Determine the first path segment (usually the repo name on GitHub Pages)
+  const pathSegments = window.location.pathname.split("/").filter(Boolean)
+  let baseDir = "/"
+  if (pathSegments.length > 0 && pathSegments[0] !== "pages") {
+    baseDir = `/${pathSegments[0]}/`
+  }
+  const detailPath = `${baseDir}pages/recipe-detail.html`
+  const baseUrl = window.location.origin + detailPath
   const qrUrl = `${baseUrl}?recipe=${encodedData}`
 
   // Declare QRCode variable before using it
