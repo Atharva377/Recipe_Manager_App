@@ -3,6 +3,31 @@
 /**
  * Generate QR code for recipe
  */
+// Helpers to safely base64 encode/decode Unicode strings
+function base64EncodeUnicode(str) {
+  try {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+      return String.fromCharCode('0x' + p1);
+    }));
+  } catch (e) {
+    console.error('base64EncodeUnicode failed, falling back to btoa:', e);
+    return btoa(str);
+  }
+}
+
+function base64DecodeUnicode(str) {
+  try {
+    const binary = atob(str);
+    const percentEncoded = Array.prototype.map.call(binary, function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join('');
+    return decodeURIComponent(percentEncoded);
+  } catch (e) {
+    console.error('base64DecodeUnicode failed, falling back to atob:', e);
+    return atob(str);
+  }
+}
+
 function generateQRCode(recipeId) {
   const modal = document.getElementById("qrModal");
   const qrCodeDiv = document.getElementById("qrCode");
@@ -29,18 +54,18 @@ function generateQRCode(recipeId) {
     recipe: recipe,
     app: "RecipeManager" 
   });
-  const encodedData = btoa(recipeData);
+  const encodedData = base64EncodeUnicode(recipeData);
   
   console.log("Recipe to encode:", recipe.title);
   console.log("Encoded data length:", encodedData.length);
   
-  // Generate the correct URL for the recipe detail page
+  // Generate the correct URL for the landing page (scanners should land on Home)
   const currentUrl = window.location.href;
   const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1);
-  const qrUrl = `${baseUrl}recipe-detail.html?recipe=${encodedData}`;
+  // Redirect scanners to landing.html (contains logic to read recipe params)
+  const qrUrl = `${baseUrl}landing.html`;
 
-  // Prepare a smaller fallback QR that only contains the recipe ID
-  const qrUrlSmall = `${baseUrl}recipe-detail.html?recipeId=${encodeURIComponent(String(recipe.id))}`;
+  
 
   // If the encoded data is very large, prefer the small QR to avoid library limits
   const MAX_QR_PAYLOAD = 1000; // bytes - conservative threshold
@@ -48,11 +73,11 @@ function generateQRCode(recipeId) {
   let usedSmallFallback = false;
   if (encodedData.length > MAX_QR_PAYLOAD) {
     console.warn("Encoded recipe data is large; using ID-only QR fallback");
-    qrTextToRender = qrUrlSmall;
+    qrTextToRender = qrUrl;
     usedSmallFallback = true;
   }
 
-  console.log("Generated QR URL:", qrUrl);
+  console.log("Generated QR URL (landing):", qrUrl);
 
   // Declare QRCode variable before using it
   const QRCode = window.QRCode;
@@ -83,7 +108,7 @@ function generateQRCode(recipeId) {
         try {
           qrCodeDiv.innerHTML = "";
           new window.QRCode(qrCodeDiv, {
-            text: qrUrlSmall,
+            text: qrUrl,
             width: 250,
             height: 250,
             colorDark: "#000000",
@@ -171,8 +196,8 @@ function getRecipeFromURL() {
   }
   
   try {
-    // Decode the base64 encoded recipe data
-    const decodedData = atob(recipeParam);
+    // Decode the base64 encoded recipe data (supports Unicode)
+    const decodedData = base64DecodeUnicode(recipeParam);
     console.log("Decoded data:", decodedData);
     const recipeData = JSON.parse(decodedData);
     console.log("Parsed recipe data from URL:", recipeData);

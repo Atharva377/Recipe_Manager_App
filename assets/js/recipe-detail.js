@@ -211,3 +211,5 @@ function duplicateRecipeFromDetail(recipeId) {
     window.location.href = "landing.html";
   }, 1500);
 }
+
+// Note: generateQRCode will open the QR modal; do not redirect the current page.
