@@ -12,33 +12,33 @@
     <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-brand">
-                <h1 data-i18n="brand">🍳 CookBook by Atharva</h1>
+                <h1>🍳 CookBook by Atharva</h1>
             </div>
             <ul class="nav-menu">
-                <li><a href="landing.html" class="nav-link active" data-i18n="nav_home">Home</a></li>
-                <li><a href="add-recipe.html" class="nav-link" data-i18n="nav_add">Add Recipe</a></li>
-                <li><a href="meal-plan.html" class="nav-link" data-i18n="nav_meal">Meal Plan</a></li>
-                <li><a href="shopping-list.html" class="nav-link" data-i18n="nav_shop">Shopping List</a></li>
-                <li><a href="#" class="nav-link" onclick="openImportModal()" data-i18n="nav_import">Import</a></li>
-                <li><a href="#" class="nav-link" onclick="exportAllRecipes()" data-i18n="nav_export">Export</a></li>
+                <li><a href="landing.html" class="nav-link active">Home</a></li>
+                <li><a href="add-recipe.html" class="nav-link">Add Recipe</a></li>
+                <li><a href="meal-plan.html" class="nav-link">Meal Plan</a></li>
+                <li><a href="shopping-list.html" class="nav-link">Shopping List</a></li>
+                <li><a href="#" class="nav-link" onclick="openImportModal()">Import</a></li>
+                <li><a href="#" class="nav-link" onclick="exportAllRecipes()">Export</a></li>
             </ul>
         </div>
     </nav>
 
     <main class="container">
         <section class="hero">
-            <h2 data-i18n="hero_title">Atharva's Kitchen</h2>
-            <p data-i18n="hero_sub">Discover, manage, and share your favorite recipes</p>
+            <h2>Atharva's Kitchen</h2>
+            <p>Discover, manage, and share your favorite recipes</p>
         </section>
 
         <section class="controls">
             <div class="search-box">
-                <input type="text" id="searchInput" data-i18n-placeholder="search_placeholder" placeholder="Search recipes by title..." />
+                <input type="text" id="searchInput" placeholder="Search recipes by title..." />
             </div>
             <div class="filter-group">
-                <label for="categoryFilter" data-i18n="category_label">Category:</label>
+                <label for="categoryFilter">Category:</label>
                 <select id="categoryFilter">
-                    <option value="" data-i18n="category_all">All Categories</option>
+                    <option value="">All Categories</option>
                     <option value="Vegetarian">Vegetarian</option>
                     <option value="Vegan">Vegan</option>
                     <option value="Non-Vegetarian">Non-Vegetarian</option>
@@ -47,25 +47,25 @@
                 </select>
             </div>
             <div class="filter-group">
-                <label for="difficultyFilter" data-i18n="difficulty_label">Difficulty:</label>
+                <label for="difficultyFilter">Difficulty:</label>
                 <select id="difficultyFilter">
-                    <option value="" data-i18n="difficulty_all">All Levels</option>
+                    <option value="">All Levels</option>
                     <option value="Easy">Easy</option>
                     <option value="Medium">Medium</option>
                     <option value="Hard">Hard</option>
                 </select>
             </div>
             <div class="filter-group">
-                <label for="prepTimeFilter" data-i18n="prepTime_label">Max Prep Time (mins):</label>
-                <input type="number" id="prepTimeFilter" data-i18n-placeholder="prepTime_label" placeholder="e.g., 30" min="0" />
+                <label for="prepTimeFilter">Max Prep Time (mins):</label>
+                <input type="number" id="prepTimeFilter" placeholder="e.g., 30" min="0" />
             </div>
             <div class="filter-group">
                 <label for="favoriteFilter">
                     <input type="checkbox" id="favoriteFilter" />
-                    <span data-i18n="favorites_only">Favorites Only</span>
+                    Favorites Only
                 </label>
             </div>
-            <button id="resetFilters" class="btn btn-secondary" data-i18n="reset_filters">Reset Filters</button>
+            <button id="resetFilters" class="btn btn-secondary">Reset Filters</button>
         </section>
 
         <div id="errorContainer" class="error-message" style="display: none;"></div>
@@ -76,8 +76,8 @@
         </section>
 
         <div id="emptyState" class="empty-state" style="display: none;">
-            <h3 data-i18n="no_recipes_title">No recipes found</h3>
-            <p data-i18n="no_recipes_text">Try adjusting your search or filters, or <a href="add-recipe.html">add a new recipe</a></p>
+            <h3>No recipes found</h3>
+            <p>Try adjusting your search or filters, or <a href="pages/add-recipe.html">add a new recipe</a></p>
         </div>
     </main>
 
@@ -85,22 +85,21 @@
     <div id="importModal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close-modal" onclick="closeImportModal()">&times;</span>
-            <h2 data-i18n="import_title">Import Recipes</h2>
-            <p data-i18n="import_text">Select a JSON file to import recipes:</p>
+            <h2>Import Recipes</h2>
+            <p>Select a JSON file to import recipes:</p>
             <input type="file" id="importFile" accept=".json" />
             <div class="modal-actions">
-                <button class="btn btn-primary" onclick="handleImport()" data-i18n="import_button">Import</button>
-                <button class="btn btn-secondary" onclick="closeImportModal()" data-i18n="cancel">Cancel</button>
+                <button class="btn btn-primary" onclick="handleImport()">Import</button>
+                <button class="btn btn-secondary" onclick="closeImportModal()">Cancel</button>
             </div>
         </div>
     </div>
 
     <footer class="footer">
-        <p data-i18n="footer">&copy; 2025 Recipe Manager. Built with love for cooking enthusiasts.</p>
+        <p>&copy; 2025 Recipe Manager. Built with love for cooking enthusiasts.</p>
     </footer>
 
     <!-- Core scripts -->
-    <script src="../assets/js/i18n.js"></script>
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/storage.js"></script>
     <script src="../assets/js/home.js"></script>

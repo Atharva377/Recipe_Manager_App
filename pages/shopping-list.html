@@ -12,7 +12,7 @@
     <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-brand">
-                <h1 data-i18n="brand">🍳 Recipe Manager</h1>
+                <h1>🍳 Recipe Manager</h1>
             </div>
             <button class="hamburger" onclick="toggleMenu()">
                 <span></span>
@@ -20,22 +20,22 @@
                 <span></span>
             </button>
             <ul class="nav-menu">
-                <li><a href="landing.html" class="nav-link" data-i18n="nav_home">Home</a></li>
-                <li><a href="add-recipe.html" class="nav-link" data-i18n="nav_add">Add Recipe</a></li>
-                <li><a href="meal-plan.html" class="nav-link" data-i18n="nav_meal">Meal Plan</a></li>
-                <li><a href="shopping-list.html" class="nav-link active" data-i18n="nav_shop">Shopping List</a></li>
+                <li><a href="landing.html" class="nav-link">Home</a></li>
+                <li><a href="add-recipe.html" class="nav-link">Add Recipe</a></li>
+                <li><a href="meal-plan.html" class="nav-link">Meal Plan</a></li>
+                <li><a href="shopping-list.html" class="nav-link active">Shopping List</a></li>
             </ul>
         </div>
     </nav>
 
     <main class="container">
-        <h2 data-i18n="shopping_title">Shopping List</h2>
+        <h2>Shopping List</h2>
         
         <div class="shopping-list-controls">
-            <button class="btn btn-primary" onclick="printShoppingList()" data-i18n="btn_print">🖨️ Print</button>
-            <button class="btn btn-secondary" onclick="downloadShoppingList()" data-i18n="btn_download">📥 Download</button>
-            <button class="btn btn-secondary" onclick="clearShoppingList()" data-i18n="btn_clear_all">Clear All</button>
-            <button class="btn btn-secondary" onclick="window.location.href='meal-plan.html'" data-i18n="btn_back_mealplan">Back to Meal Plan</button>
+            <button class="btn btn-primary" onclick="printShoppingList()">🖨️ Print</button>
+            <button class="btn btn-secondary" onclick="downloadShoppingList()">📥 Download</button>
+            <button class="btn btn-secondary" onclick="clearShoppingList()">Clear All</button>
+            <button class="btn btn-secondary" onclick="window.location.href='meal-plan.html'">Back to Meal Plan</button>
         </div>
 
         <div id="shoppingListContainer" class="shopping-list-container">
@@ -44,11 +44,10 @@
     </main>
 
     <footer class="footer">
-        <p data-i18n="footer">&copy; 2025 Recipe Manager. Built with love for cooking enthusiasts.</p>
+        <p>&copy; 2025 Recipe Manager. Built with love for cooking enthusiasts.</p>
     </footer>
 
     <!-- Core scripts -->
-    <script src="../assets/js/i18n.js"></script>
     <script src="../assets/js/main.js"></script>
     <script src="../assets/js/storage.js"></script>
     <script src="../assets/js/shopping-list.js"></script>

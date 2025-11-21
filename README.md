@@ -118,7 +118,6 @@ However, in other browsers, only the Veg Biryani recipe appears, and the remaini
 ## 🌟 Unique Features Implemented
 
 ### 🎯 Advanced Recipe Management
-- **Multilingual Support Implementation** - This website seamlessly adapts its interface and content based on the user's preferred language, offering a localized experience across multiple languages(English, Hindi, Marathi).
 - **Smart Search & Filtering** - Perform searches in real time by title/description with multiple filter options
 - **Recipe Duplication** - One-click copy a recipe to create variations
 - **Favorites System** - Mark a recipe as a favorite with a heart and get visual feedback
