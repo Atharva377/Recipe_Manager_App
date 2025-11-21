@@ -357,19 +357,37 @@ document.addEventListener("DOMContentLoaded", () => {
       const encoded = params.get("recipe")
       const decoded = atob(encoded)
       const parsed = JSON.parse(decoded)
-      if (parsed && parsed.recipeId) {
-        sessionStorage.setItem("selectedRecipeId", String(parsed.recipeId))
-        // If not already on recipe-detail page, navigate there so loadRecipeDetail runs
-        const currentPage = window.location.pathname.split("/").pop() || "index.html"
-        if (currentPage !== "recipe-detail.html") {
-          const pathSegments = window.location.pathname.split("/").filter(Boolean)
-          let baseDir = "/"
-          if (pathSegments.length > 0 && pathSegments[0] !== "pages") {
-            baseDir = `/${pathSegments[0]}/`
+
+      // If the payload contains a full recipe object, persist it to localStorage so it is available on this device
+      if (parsed && parsed.recipe) {
+        try {
+          const incoming = parsed.recipe
+          const recipes = loadRecipes()
+          // Ensure id is string
+          incoming.id = incoming.id !== undefined && incoming.id !== null ? String(incoming.id) : String(generateId())
+          const exists = recipes.find((r) => String(r.id) === String(incoming.id))
+          if (!exists) {
+            recipes.push(incoming)
+            saveRecipes(recipes)
           }
-          window.location.href = window.location.origin + baseDir + "pages/recipe-detail.html"
-          return
+          sessionStorage.setItem("selectedRecipeId", String(incoming.id))
+        } catch (e) {
+          console.error("Failed to persist incoming recipe:", e)
         }
+      } else if (parsed && parsed.recipeId) {
+        sessionStorage.setItem("selectedRecipeId", String(parsed.recipeId))
+      }
+
+      // If not already on recipe-detail page, navigate there so loadRecipeDetail runs
+      const currentPage = window.location.pathname.split("/").pop() || "index.html"
+      if (currentPage !== "recipe-detail.html") {
+        const pathSegments = window.location.pathname.split("/").filter(Boolean)
+        let baseDir = "/"
+        if (pathSegments.length > 0 && pathSegments[0] !== "pages") {
+          baseDir = `/${pathSegments[0]}/`
+        }
+        window.location.href = window.location.origin + baseDir + "pages/recipe-detail.html"
+        return
       }
     }
   } catch (err) {

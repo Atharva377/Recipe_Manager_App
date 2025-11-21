@@ -12,7 +12,25 @@ function generateQRCode(recipeId) {
   qrCodeDiv.innerHTML = ""
   if (timerDiv) timerDiv.innerHTML = ""
 
-  const recipeData = JSON.stringify({ recipeId, app: "RecipeManager" })
+  // Try to include the full recipe object so QR works across devices/browsers
+  let payload = { app: "RecipeManager" }
+  try {
+    if (typeof loadRecipes === "function") {
+      const all = loadRecipes()
+      const found = all.find((r) => String(r.id) === String(recipeId))
+      if (found) {
+        payload.recipe = found
+      } else {
+        payload.recipeId = recipeId
+      }
+    } else {
+      payload.recipeId = recipeId
+    }
+  } catch (err) {
+    payload.recipeId = recipeId
+  }
+
+  const recipeData = JSON.stringify(payload)
   const encodedData = btoa(recipeData)
 
   // Build a robust URL that always points to the recipe detail page
