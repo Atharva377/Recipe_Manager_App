@@ -2,12 +2,16 @@
 
 A fully functional, browser-based recipe management application built with vanilla HTML, CSS, and JavaScript. Manage, search, organize recipes, plan meals, and generate shopping lists—all in your browser with no server required.
 
+# Go to Atharva's CookBook: https://atharva377.github.io/Recipe_Manager_App/
+
+
 ## 🚀 How to Run the App
 
 ### Quick Start
 1. **Download or Clone** the project files to your local machine
 2. **Open in Browser** - Simply open `index.html` in any modern web browser (Chrome, Firefox, Safari, Edge)
 3. **Start Using** - The app loads automatically with Veg Biryani (categorized as "Vegetarian") as the first recipe
+3. **Avoid using incognito mode because it may cause localStorage issues.**
 
 No installation, npm packages, or server setup required. Everything runs directly in your browser.
 
@@ -87,22 +91,6 @@ No installation, npm packages, or server setup required. Everything runs directl
   "updatedAt": "2024-11-20T10:30:00.000Z"
 }
 ```
-
-### Field Descriptions
-| Field | Type | Description | Required |
-|-------|------|-------------|----------|
-| id | String | Unique identifier (timestamp-based) | Auto-generated |
-| title | String | Recipe name | Yes |
-| description | String | Short recipe description | Yes |
-| prepTime | Number | Preparation time in minutes | Yes |
-| cookTime | Number | Cooking time in minutes | Yes |
-| servings | Number | Number of servings | Yes |
-| difficulty | String | Easy, Medium, or Hard | Yes |
-| ingredients | Array | List of ingredients | Yes (minimum 1) |
-| steps | Array | Cooking instructions | Yes (minimum 1) |
-| imageUrl | String | Online image URL (HTTPS recommended) | No |
-| createdAt | Number | Creation timestamp | Auto-generated |
-| updatedAt | Number | Last update timestamp | Auto-generated |
 
 ### Data Initialization
 - On **first load**, the app checks if localStorage is empty
