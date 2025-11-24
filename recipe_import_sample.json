@@ -1,0 +1,52 @@
+[
+    {
+        "recipeId": "unique-id-123",
+        "title": "Classic Margherita Pizza",
+        "description": "A simple and delicious homemade Margherita pizza with fresh basil and mozzarella.",
+        "category": "Italian",
+        "imageUrl": "https://example.com/images/pizza.jpg",
+        "ingredients": [
+            {
+                "name": "Pizza dough",
+                "quantity": "1 ball"
+            },
+            {
+                "name": "Tomato sauce",
+                "quantity": "1/2 cup"
+            },
+            {
+                "name": "Mozzarella cheese",
+                "quantity": "150g"
+            },
+            {
+                "name": "Fresh basil leaves",
+                "quantity": "6\u20138 leaves"
+            },
+            {
+                "name": "Olive oil",
+                "quantity": "1 tbsp"
+            }
+        ],
+        "instructions": [
+            "Preheat the oven to 475\u00b0F (245\u00b0C).",
+            "Spread tomato sauce evenly over the dough.",
+            "Add mozzarella slices and drizzle olive oil.",
+            "Bake for 10\u201312 minutes until the crust is golden.",
+            "Top with fresh basil leaves and serve."
+        ],
+        "nutrition": {
+            "calories": 800,
+            "protein": "25g",
+            "carbs": "90g",
+            "fat": "30g"
+        },
+        "prepTime": "15 minutes",
+        "cookTime": "12 minutes",
+        "servings": 2,
+        "tags": [
+            "pizza",
+            "italian",
+            "vegetarian"
+        ]
+    }
+]

@@ -137,7 +137,8 @@ No installation, npm packages, or server setup required. Everything runs directl
 ### 🔄 Data Management
 - **Export/Import System** - Full JSON backup/restore functionality
 - **Browser Storage** - All data is stored locally using localStorage
-- **Data Validation** - Fully validated forms with message errors
+- **Import Data Format** - Supports importing recipes as a JSON array. Ensure the data follows the array format in JSON for successful import.
+- **Sample Data Provided** - A sample JSON file named `recipe_import_sample.json` is included in the codebase for reference and testing.
 
 ### 🗓️ Meal Planning & Shopping
 - **Weekly Meal Planner** - A calendar to visualize what you are planning for breakfast, lunch, and dinner by the day of the week
