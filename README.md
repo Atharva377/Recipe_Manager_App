@@ -148,6 +148,7 @@ No installation, npm packages, or server setup required. Everything runs directl
 - **Modern UI/UX** - Clean, intuitive interface with smooth animations
 - **Real-time Updates** - Instant filtering and search results
 - **Empty States** - Helpful messages when no recipes or items found
+- **Dark & Light Mode** - Theme automatically adapts based on user preference, with a toggle for manual control
 
 ## Features
 
