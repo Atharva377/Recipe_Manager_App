@@ -138,7 +138,6 @@ However, in other browsers, only the Veg Biryani recipe appears, and the remaini
 - **Export/Import System** - Full JSON backup/restore functionality
 - **Browser Storage** - All data is stored locally using localStorage
 - **Data Validation** - Fully validated forms with message errors
-- **Duplicate Prevention** - If there is a recipe with the same name, an import will "smart merge" recipes when importing
 
 ### 🗓️ Meal Planning & Shopping
 - **Weekly Meal Planner** - A calendar to visualize what you are planning for breakfast, lunch, and dinner by the day of the week
