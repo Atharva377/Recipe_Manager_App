@@ -1,8 +1,10 @@
 # CookBook by Atharva-Your Personal Recipe Collection
 
-A project built with a strong focus on Outcome, Accountability, and delivering a highly User-Friendly experience.
+A project designed with a commitment to Communication, Outcome and Accountability and a highly User-Friendly experience.
 
-A fully functional, browser-based recipe management application built with vanilla HTML, CSS, and JavaScript. Manage, search, organize recipes, plan meals, and generate shopping lists—all in your browser with no server required.
+A fully functional, cross-platform, browser-based recipe management app, designed from the ground up using vanilla HTML, CSS, and JavaScript. Manage, search, and organize recipes, meal plan, and generate grocery shopping lists on a browser with no server required.
+
+All of the core functionality as designed has been achieved, along with some unique features, listed below in the README.
 
 **Go to Atharva's CookBook:** https://atharva377.github.io/Recipe_Manager_App/
 
