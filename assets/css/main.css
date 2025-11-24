@@ -219,7 +219,8 @@ a:hover {
 }
 
 .hamburger.active span:nth-child(1) {
-  transform: rotate(-45deg) translate(-0.5rem, 0.65rem);
+  transform: rotate(-45deg) translate(-0.3rem, 0.3rem);
+  margin-right: 10px;
 }
 
 .hamburger.active span:nth-child(2) {
@@ -227,7 +228,7 @@ a:hover {
 }
 
 .hamburger.active span:nth-child(3) {
-  transform: rotate(45deg) translate(-0.55rem, -0.65rem);
+  transform: rotate(45deg) translate(-0.3rem, -0.5rem);
 }
 
 /* Container */
