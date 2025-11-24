@@ -11,6 +11,8 @@ function initializeForm() {
   console.log("Edit Recipe ID:", editRecipeId)
 
   if (!form) return
+  // Attach real-time field validation listeners
+  setupFieldValidation()
 
   if (editRecipeId) {
     // Edit mode
@@ -32,6 +34,10 @@ function initializeForm() {
   }
 
   form.addEventListener("submit", handleFormSubmit)
+  form.addEventListener("reset", function () {
+    // clear errors when user resets form
+    setTimeout(clearAllFieldErrors, 0)
+  })
 
   // If user clicks cancel, clear edit state to avoid accidentally reopening edit mode
   const cancelBtn = document.getElementById("cancelBtn")
@@ -71,52 +77,22 @@ function populateForm(recipe) {
 }
 
 /**
- * Validate form input
+ * Validate form input and return per-field errors.
+ * Returns an object where keys are field ids and values are error messages.
  */
 function validateForm(formData) {
-  const errors = []
+  const fieldErrors = {}
 
-  if (!formData.title.trim()) {
-    errors.push("Recipe title is required.")
-  }
+  // Use our fieldValidators map to check each field
+  Object.keys(fieldValidators).forEach((key) => {
+    let value = formData[key]
+    const validator = fieldValidators[key]
+    if (!validator) return
+    const msg = validator(value)
+    if (msg) fieldErrors[key] = msg
+  })
 
-  if (formData.title.length > 200) {
-    errors.push("Recipe title must be less than 200 characters.")
-  }
-
-  if (!formData.category) {
-    errors.push("Recipe category is required.")
-  }
-
-  if (formData.prepTime < 0 || isNaN(formData.prepTime)) {
-    errors.push("Prep time must be a positive number.")
-  }
-
-  if (formData.cookTime < 0 || isNaN(formData.cookTime)) {
-    errors.push("Cook time must be a positive number.")
-  }
-
-  if (formData.servings < 1 || isNaN(formData.servings)) {
-    errors.push("Servings must be at least 1.")
-  }
-
-  if (!formData.difficulty) {
-    errors.push("Difficulty level is required.")
-  }
-
-  if (formData.ingredients.length === 0) {
-    errors.push("At least one ingredient is required.")
-  }
-
-  if (formData.steps.length === 0) {
-    errors.push("At least one cooking step is required.")
-  }
-
-  if (formData.imageUrl && !isValidUrl(formData.imageUrl)) {
-    errors.push("Please enter a valid image URL.")
-  }
-
-  return errors
+  return fieldErrors
 }
 
 /**
@@ -161,9 +137,14 @@ function handleFormSubmit(e) {
 
   console.log("Form data:", formData)
 
-  const errors = validateForm(formData)
-  if (errors.length > 0) {
-    showError(errors.join(" "))
+  // Clear previous field errors before validating
+  clearAllFieldErrors()
+
+  const fieldErrors = validateForm(formData)
+  if (Object.keys(fieldErrors).length > 0) {
+    // show a concise global message and per-field messages
+    showError("Please fill in all essential fields.")
+    Object.entries(fieldErrors).forEach(([field, msg]) => setFieldError(field, msg))
     return
   }
 
@@ -217,4 +198,94 @@ function handleFormSubmit(e) {
     console.error("Save error:", error)
     showError("Failed to save recipe. Please try again.")
   }
+}
+
+/**
+ * Field-level helpers and validators
+ */
+function setFieldError(fieldId, message) {
+  const err = document.getElementById(`error-${fieldId}`)
+  const el = document.getElementById(fieldId)
+  const group = el ? el.closest(".form-group") : null
+  if (err) err.textContent = message || ""
+  if (group) {
+    if (message) group.classList.add("invalid")
+    else group.classList.remove("invalid")
+  }
+}
+
+function clearFieldError(fieldId) {
+  setFieldError(fieldId, "")
+}
+
+function clearAllFieldErrors() {
+  const errorEls = document.querySelectorAll(".field-error")
+  errorEls.forEach((el) => (el.textContent = ""))
+  const invalidGroups = document.querySelectorAll(".form-group.invalid")
+  invalidGroups.forEach((g) => g.classList.remove("invalid"))
+  const global = document.getElementById("errorContainer")
+  if (global) global.style.display = "none"
+}
+
+const fieldValidators = {
+  title: (v) => {
+    if (!v || !v.trim()) return "Recipe name is required."
+    if (v.length > 200) return "Recipe title must be less than 200 characters."
+    return ""
+  },
+  category: (v) => (!v ? "Recipe category is required." : ""),
+  prepTime: (v) => (isNaN(v) || v < 0 ? "Prep time must be a positive number." : ""),
+  cookTime: (v) => (isNaN(v) || v < 0 ? "Cook time must be a positive number." : ""),
+  servings: (v) => (isNaN(v) || v < 1 ? "Servings must be at least 1." : ""),
+  difficulty: (v) => (!v ? "Difficulty level is required." : ""),
+  ingredients: (arr) => (!arr || arr.length === 0 ? "Please add at least one ingredient." : ""),
+  steps: (arr) => (!arr || arr.length === 0 ? "Instructions cannot be empty." : ""),
+  imageUrl: (v) => (v && v.length > 0 && !isValidUrl(v) ? "Please enter a valid image URL." : ""),
+}
+
+function setupFieldValidation() {
+  const fields = [
+    "title",
+    "category",
+    "prepTime",
+    "cookTime",
+    "servings",
+    "difficulty",
+    "ingredients",
+    "steps",
+    "imageUrl",
+  ]
+
+  fields.forEach((id) => {
+    const el = document.getElementById(id)
+    if (!el) return
+
+    const eventName = el.tagName.toLowerCase() === "select" || el.type === "number" ? "change" : "input"
+
+    el.addEventListener(eventName, () => {
+      // compute value according to field type
+      let value = el.value
+      if (id === "prepTime" || id === "cookTime" || id === "servings") {
+        value = Number.parseFloat(el.value)
+      }
+      if (id === "ingredients") {
+        value = el.value
+          .split("\n")
+          .map((i) => i.trim())
+          .filter((i) => i.length > 0)
+      }
+      if (id === "steps") {
+        value = el.value
+          .split("\n")
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0)
+      }
+
+      const validator = fieldValidators[id]
+      if (!validator) return
+      const msg = validator(value)
+      if (msg) setFieldError(id, msg)
+      else clearFieldError(id)
+    })
+  })
 }

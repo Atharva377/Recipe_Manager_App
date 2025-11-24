@@ -78,6 +78,7 @@
                 <div class="form-group">
                     <label for="title">Recipe Title *</label>
                     <input type="text" id="title" name="title" required placeholder="e.g., Veg Biryani">
+                    <div class="field-error" id="error-title" aria-live="polite"></div>
                 </div>
 
                 <div class="form-group">
@@ -97,6 +98,7 @@
                             <option value="Dessert">Dessert</option>
                             <option value="Breakfast">Breakfast</option>
                         </select>
+                        <div class="field-error" id="error-category" aria-live="polite"></div>
                     </div>
                     <div class="form-group">
                         <label for="tags">Tags (comma-separated)</label>
@@ -108,10 +110,12 @@
                     <div class="form-group">
                         <label for="prepTime">Prep Time (minutes) *</label>
                         <input type="number" id="prepTime" name="prepTime" required min="0" placeholder="30">
+                        <div class="field-error" id="error-prepTime" aria-live="polite"></div>
                     </div>
                     <div class="form-group">
                         <label for="cookTime">Cook Time (minutes) *</label>
                         <input type="number" id="cookTime" name="cookTime" required min="0" placeholder="45">
+                        <div class="field-error" id="error-cookTime" aria-live="polite"></div>
                     </div>
                 </div>
 
@@ -119,6 +123,7 @@
                     <div class="form-group">
                         <label for="servings">Servings *</label>
                         <input type="number" id="servings" name="servings" required min="1" placeholder="4">
+                        <div class="field-error" id="error-servings" aria-live="polite"></div>
                     </div>
                     <div class="form-group">
                         <label for="difficulty">Difficulty Level *</label>
@@ -128,6 +133,7 @@
                             <option value="Medium">Medium</option>
                             <option value="Hard">Hard</option>
                         </select>
+                        <div class="field-error" id="error-difficulty" aria-live="polite"></div>
                     </div>
                 </div>
 
@@ -158,16 +164,19 @@
                             <label for="imageUrl">Recipe Image URL</label>
                             <input type="url" id="imageUrl" name="imageUrl" placeholder="https://example.com/image.jpg">
                             <small>Paste a URL to a food image. Leave blank for default image.</small>
+                            <div class="field-error" id="error-imageUrl" aria-live="polite"></div>
                 </div>
 
                 <div class="form-group">
                     <label for="ingredients">Ingredients * (one per line)</label>
                     <textarea id="ingredients" name="ingredients" required placeholder="1 cup rice&#10;2 cups vegetables&#10;1 tbsp oil&#10;..." rows="6"></textarea>
+                    <div class="field-error" id="error-ingredients" aria-live="polite"></div>
                 </div>
 
                 <div class="form-group">
                     <label for="steps">Cooking Steps * (one per line)</label>
                     <textarea id="steps" name="steps" required placeholder="1. Rinse the rice...&#10;2. Heat the oil...&#10;3. Add vegetables...&#10;..." rows="6"></textarea>
+                    <div class="field-error" id="error-steps" aria-live="polite"></div>
                 </div>
 
                 <div class="form-actions">

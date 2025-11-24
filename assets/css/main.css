@@ -683,6 +683,25 @@ body.dark-mode .difficulty-hard {
   min-height: 44px;
 }
 
+/* Field-level error text and invalid visuals */
+.field-error {
+  color: var(--color-error);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: none; /* shown when error exists */
+}
+
+.form-group.invalid input,
+.form-group.invalid textarea,
+.form-group.invalid select {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.06);
+}
+
+.form-group.invalid .field-error {
+  display: block;
+}
+
 .form-group input,
 .form-group textarea,
 .form-group select {
