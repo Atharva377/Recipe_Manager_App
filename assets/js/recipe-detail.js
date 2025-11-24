@@ -179,35 +179,3 @@ function deleteAndReturn(recipeId) {
     showError("Failed to delete recipe.");
   }
 }
-
-/**
- * Duplicate recipe from detail page
- */
-function duplicateRecipeFromDetail(recipeId) {
-  const recipes = loadRecipes();
-  const recipe = recipes.find((r) => String(r.id) === String(recipeId));
-
-  if (!recipe) {
-    showError("Recipe not found.");
-    return;
-  }
-
-  const duplicatedRecipe = {
-    ...recipe,
-    id: String(generateId()),
-    title: `${recipe.title} (Copy)`,
-    createdAt: new Date().toISOString(),
-    isFavorite: false,
-    rating: 0,
-  };
-
-  recipes.push(duplicatedRecipe);
-  saveRecipes(recipes);
-  showSuccess(`Recipe "${recipe.title}" duplicated successfully!`);
-  
-  setTimeout(() => {
-    window.location.href = "landing.html";
-  }, 1500);
-}
-
-// Note: generateQRCode will open the QR modal; do not redirect the current page.
