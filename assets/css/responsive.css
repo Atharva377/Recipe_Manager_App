@@ -3,6 +3,7 @@
 /* Small tablets and large phones (600px and up) */
 /* Print styles */
 @media print {
+
   nav,
   footer,
   .controls,
@@ -45,6 +46,7 @@
 
 /* Hide the 'Want to view on mobile? Scan here' button on small/mobile screens */
 @media (max-width: 600px) {
+
   #scanButton,
   .scan-button {
     display: none !important;
@@ -265,6 +267,19 @@
     grid-template-columns: 1fr;
   }
 
+  .tags-container {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .favorite-btn {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    min-height: 32px;
+    width: auto;
+  }
+
   .navbar-container {
     flex-direction: row;
     align-items: center;
@@ -302,67 +317,17 @@
     font-size: 1rem;
   }
 
-  .hamburger span {
-    width: 20px;
-    height: 2px;
+  .tags-container {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .nav-link {
-    font-size: 0.85rem;
-    padding: var(--spacing-xs) var(--spacing-sm);
-  }
-
-  .hero h2 {
-    font-size: 1.5rem;
-  }
-
-  .recipe-card-title {
-    font-size: 1rem;
-  }
-
-  .recipe-card-actions {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .recipe-detail-actions {
-    grid-template-columns: 1fr;
-  }
-
-  .shopping-list-controls {
-    grid-template-columns: 1fr;
-  }
-
-  .nutrition-box {
-    grid-template-columns: 1fr;
-  }
-
-  .shopping-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
-  }
-
-  .shopping-item-text {
-    min-width: auto;
-  }
-
-  .shopping-item-quantity {
-    text-align: left;
-  }
-
-  .shopping-item button {
-    align-self: stretch;
-  }
-}
-
-@media (max-width: 360px) {
-
-  .navbar-container {
-    padding: var(--spacing-xs) var(--spacing-sm);
-  }
-
-  .navbar-brand h1 {
-    font-size: 1rem;
+  .favorite-btn {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    min-height: 32px;
+    width: auto;
   }
 
   .hamburger span {
@@ -418,68 +383,6 @@
   }
 }
 
-@media (max-width: 325px) {
-
-  .navbar-container {
-    padding: var(--spacing-xs) var(--spacing-sm);
-  }
-
-  .navbar-brand h1 {
-    font-size: 1rem;
-  }
-
-  .hamburger span {
-    width: 20px;
-    height: 2px;
-  }
-
-  .nav-link {
-    font-size: 0.85rem;
-    padding: var(--spacing-xs) var(--spacing-sm);
-  }
-
-  .hero h2 {
-    font-size: 1.5rem;
-  }
-
-  .recipe-card-title {
-    font-size: 1rem;
-  }
-
-  .recipe-card-actions {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .recipe-detail-actions {
-    grid-template-columns: 1fr;
-  }
-
-  .shopping-list-controls {
-    grid-template-columns: 1fr;
-  }
-
-  .nutrition-box {
-    grid-template-columns: 1fr;
-  }
-
-  .shopping-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
-  }
-
-  .shopping-item-text {
-    min-width: auto;
-  }
-
-  .shopping-item-quantity {
-    text-align: left;
-  }
-
-  .shopping-item button {
-    align-self: stretch;
-  }
-}
 
 
 /* Orientation-specific styles */
@@ -498,7 +401,9 @@
 }
 
 /* High-density screens */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+
   .recipe-card-image,
   .recipe-detail-image {
     image-rendering: -webkit-optimize-contrast;
@@ -577,4 +482,3 @@
     padding: 1rem;
   }
 }
-
