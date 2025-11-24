@@ -33,6 +33,88 @@ function closeImportModal() {
 }
 
 /**
+ * Normalize imported recipes to match app structure
+ */
+function normalizeImportedRecipes(recipes) {
+  return recipes.map((recipe) => {
+    // Handle recipeId -> id conversion
+    const id = recipe.id || recipe.recipeId || String(generateId());
+
+    // Handle ingredients: convert from objects to strings if needed
+    let ingredients = [];
+    if (Array.isArray(recipe.ingredients)) {
+      ingredients = recipe.ingredients.map((ing) => {
+        if (typeof ing === "string") {
+          return ing;
+        }
+        if (ing.name && ing.quantity) {
+          return `${ing.name} - ${ing.quantity}`;
+        }
+        if (ing.name) {
+          return ing.name;
+        }
+        return "";
+      }).filter((i) => i.length > 0);
+    }
+
+    // Handle steps/instructions
+    let steps = [];
+    if (Array.isArray(recipe.steps)) {
+      steps = recipe.steps.filter((s) => typeof s === "string" && s.trim().length > 0);
+    } else if (Array.isArray(recipe.instructions)) {
+      steps = recipe.instructions.filter((s) => typeof s === "string" && s.trim().length > 0);
+    }
+
+    // Handle time values: convert strings to numbers
+    const parsePrepTime = (value) => {
+      if (typeof value === "number") return value;
+      if (typeof value === "string") {
+        const match = value.match(/\d+/);
+        return match ? parseInt(match[0]) : 0;
+      }
+      return 0;
+    };
+
+    const parseCookTime = (value) => {
+      if (typeof value === "number") return value;
+      if (typeof value === "string") {
+        const match = value.match(/\d+/);
+        return match ? parseInt(match[0]) : 0;
+      }
+      return 0;
+    };
+
+    // Handle nutrition object
+    const nutrition = recipe.nutrition || {};
+    const normalizedNutrition = {
+      calories: parseInt(nutrition.calories) || 0,
+      protein: parseFloat(nutrition.protein) || 0,
+      carbs: parseFloat(nutrition.carbs) || 0,
+      fat: parseFloat(nutrition.fat) || 0,
+    };
+
+    return {
+      id: String(id),
+      title: recipe.title || "Untitled Recipe",
+      description: recipe.description || "",
+      category: recipe.category || "Uncategorized",
+      imageUrl: recipe.imageUrl || "",
+      ingredients: ingredients,
+      steps: steps,
+      tags: Array.isArray(recipe.tags) ? recipe.tags : [],
+      difficulty: recipe.difficulty || "Medium",
+      prepTime: parsePrepTime(recipe.prepTime),
+      cookTime: parseCookTime(recipe.cookTime),
+      servings: parseInt(recipe.servings) || 1,
+      nutrition: normalizedNutrition,
+      isFavorite: recipe.isFavorite || false,
+      rating: recipe.rating || 0,
+      createdAt: recipe.createdAt || new Date().toISOString(),
+    };
+  });
+}
+
+/**
  * Handle recipe import
  */
 function handleImport() {
@@ -53,16 +135,19 @@ function handleImport() {
         return
       }
 
+      // Normalize imported recipes to match app structure
+      const normalizedRecipes = normalizeImportedRecipes(importedRecipes)
+
       const currentRecipes = loadRecipes()
-      const mergedRecipes = [...currentRecipes, ...importedRecipes].filter(
+      const mergedRecipes = [...currentRecipes, ...normalizedRecipes].filter(
         (recipe, index, self) => index === self.findIndex((r) => String(r.id) === String(recipe.id)),
       )
       saveRecipes(mergedRecipes)
-      showSuccess(`Successfully imported ${importedRecipes.length} recipes!`)
+      showSuccess(`Successfully imported ${normalizedRecipes.length} recipes!`)
       closeImportModal()
       fileInput.value = ""
       setTimeout(() => {
-        window.location.href = "index.html"
+        window.location.href = "landing.html"
       }, 1500)
     } catch (error) {
       showError("Error parsing JSON file. Please check the file format.")
