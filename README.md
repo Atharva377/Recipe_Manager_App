@@ -88,10 +88,10 @@ No installation, npm packages, or server setup required. Everything runs directl
 8. **No Advanced Search Functionality** - Search only works against the title and description, not the ingredients.
 
 ## Known Issues
-### 1. Hardcoded Recipes Not Displaying Consistently Across Browsers
-**Problem:** In some browsers, all 5 hardcoded recipes are visible as expected.
-However, in other browsers, only the Veg Biryani recipe appears, and the remaining 4 do not load.
-**Temporary Solution:** Clear cache and reload.
+
+### 1. Private/Incognito Mode Restrictions
+**Problem:** Some browsers block or severely limit localStorage in Incognito/Private mode.
+**Temporary Solution:** Try not using Private/Incognito Mode.
 
 ### 2. Image Not Loading
 **Problem:** If the URL is broken or starts with HTTP on an HTTPS site, it will not work.
@@ -109,20 +109,16 @@ However, in other browsers, only the Veg Biryani recipe appears, and the remaini
 **Problem:** If you clear your browser cache/cookies, all recipes stored in localStorage will be deleted.
 **Temporary Solution:** Manually keep track of and record any important recipe.
 
-### 6. Private/Incognito Mode Restrictions
-**Problem:** Some browsers block or severely limit localStorage in Incognito/Private mode.
-**Temporary Solution:** Try not using Private/Incognito Mode.
-
-### 7. Special Characters in Titles
+### 6. Special Characters in Titles
 **Problem:** In some cases, special characters in the recipe title may not display properly.
 **Temporary Solution:** Use standard alphanumeric characters, spaces, and basic punctuation only.
 
-### 8. LocalStorage Sync Conflicts Across Tabs
+### 7. LocalStorage Sync Conflicts Across Tabs
 **Problem:** If the user opens the website in multiple tabs, changes made in one tab may overwrite data in another.
 
-### 9. Missing or Broken Recipe Image
-**Problem:** If a recipe image URL is invalid, unavailable, or fails to load, the image will not display correctly.
-**Temporary Solution:** The app will automatically fall back to a default placeholder image when the provided image URL cannot be loaded.
+### 8. Missing or Unrecognized Recipe Image 
+**Problem:** If the provided image URL is not recognized or cannot be loaded for a recipe, the image will not display properly.
+**Temporary Solution:** A default placeholder image will automatically be shown whenever the image URL fails or is unrecognized.
 
 ## 🌟 Unique Features Implemented
 
