@@ -263,20 +263,11 @@ const DEFAULT_RECIPES = [
 function toggleMenu() {
   const navMenu = document.getElementById("navMenu")
   const hamburgerBtn = document.getElementById("hamburgerBtn")
-  const themeToggleBtn = document.getElementById("themeToggleBtn")
   if (navMenu) {
     navMenu.classList.toggle("active")
   }
   if (hamburgerBtn) {
     hamburgerBtn.classList.toggle("active")
-  }
-  if (themeToggleBtn) {
-    // Hide theme toggle button when nav menu is active; else show it
-    if (navMenu && navMenu.classList.contains("active")) {
-      themeToggleBtn.style.display = "none"
-    } else {
-      themeToggleBtn.style.display = "flex"
-    }
   }
 }
 
@@ -286,16 +277,11 @@ function toggleMenu() {
 function closeMenu() {
   const navMenu = document.getElementById("navMenu")
   const hamburgerBtn = document.getElementById("hamburgerBtn")
-  const themeToggleBtn = document.getElementById("themeToggleBtn")
   if (navMenu) {
     navMenu.classList.remove("active")
   }
   if (hamburgerBtn) {
     hamburgerBtn.classList.remove("active")
-  }
-  if (themeToggleBtn) {
-    // Make sure theme toggle button is visible when menu is closed
-    themeToggleBtn.style.display = "flex"
   }
 }
 
@@ -381,8 +367,6 @@ function isValidUrl(string) {
   }
 }
 
-// ==================== EVENT LISTENERS ====================
-
 document.addEventListener("DOMContentLoaded", () => {
   initializeStorage();
   initializeMealPlanStorage();
@@ -438,4 +422,6 @@ document.addEventListener("DOMContentLoaded", () => {
   } else if (currentPage === "shopping-list.html") {
     displayShoppingList();
   }
+
+
 });

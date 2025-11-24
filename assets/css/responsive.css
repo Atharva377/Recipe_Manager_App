@@ -41,11 +41,6 @@
     font-size: 12px;
     color: #000;
   }
-
-  body.dark-mode {
-    background-color: white;
-    color: #000;
-  }
 }
 
 /* Hide the 'Want to view on mobile? Scan here' button on small/mobile screens */
@@ -266,11 +261,6 @@
 /* Phones (599px and below) */
 @media (max-width: 599px) {
 
-  #themeToggleBtn{
-    margin-top: 75px;
-    margin-right: 60px;
-  }
-
   .recipes-grid {
     grid-template-columns: 1fr;
   }
@@ -304,11 +294,6 @@
 /* Very small phones (380px and below) */
 @media (max-width: 380px) {
 
-    #themeToggleBtn{
-    margin-top: 70px;
-    margin-right: 30px;
-  }
-  
   .navbar-container {
     padding: var(--spacing-xs) var(--spacing-sm);
   }
@@ -372,11 +357,6 @@
 
 @media (max-width: 360px) {
 
-    #themeToggleBtn{
-    margin-top: 70px;
-    margin-right: 10px;
-  }
-  
   .navbar-container {
     padding: var(--spacing-xs) var(--spacing-sm);
   }
@@ -440,11 +420,6 @@
 
 @media (max-width: 325px) {
 
-    #themeToggleBtn{
-    margin-top: 70px;
-    margin-right: -2px;
-  }
-  
   .navbar-container {
     padding: var(--spacing-xs) var(--spacing-sm);
   }
