@@ -12,6 +12,8 @@
             display: flex;
             gap: 1rem;
             align-items: center;
+            margin-left: auto;
+            flex-shrink: 0;
         }
 
         .theme-toggle-btn {
@@ -42,6 +44,21 @@
         body.dark-mode .theme-toggle-btn {
             background: linear-gradient(135deg, var(--color-neutral-700) 0%, var(--color-neutral-600) 100%);
         }
+
+        @media (max-width: 599px) {
+            .navbar-actions {
+                position: absolute;
+                top: var(--spacing-sm);
+                right: var(--spacing-md);
+                margin-left: 0;
+            }
+        }
+
+        @media (min-width: 600px) {
+            .navbar-actions {
+                margin-left: auto;
+            }
+        }
     </style>
 </head>
 <body>
@@ -50,12 +67,12 @@
             <div class="navbar-brand">
                 <h1>🍳 CookBook by Atharva</h1>
             </div>
-            <button class="hamburger" onclick="toggleMenu()">
+            <button class="hamburger" id="hamburgerBtn" onclick="toggleMenu()" aria-label="Toggle menu">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-            <ul class="nav-menu">
+            <ul class="nav-menu" id="navMenu">
                 <li><a href="landing.html" class="nav-link">Home</a></li>
                 <li><a href="add-recipe.html" class="nav-link active">Add Recipe</a></li>
             </ul>

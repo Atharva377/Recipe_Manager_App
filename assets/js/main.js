@@ -254,7 +254,50 @@ const DEFAULT_RECIPES = [
   },
 ]
 
+
 // ==================== UTILITY FUNCTIONS ====================
+
+/**
+ * Toggle mobile menu visibility
+ */
+function toggleMenu() {
+  const navMenu = document.getElementById("navMenu")
+  const hamburgerBtn = document.getElementById("hamburgerBtn")
+  const themeToggleBtn = document.getElementById("themeToggleBtn")
+  if (navMenu) {
+    navMenu.classList.toggle("active")
+  }
+  if (hamburgerBtn) {
+    hamburgerBtn.classList.toggle("active")
+  }
+  if (themeToggleBtn) {
+    // Hide theme toggle button when nav menu is active; else show it
+    if (navMenu && navMenu.classList.contains("active")) {
+      themeToggleBtn.style.display = "none"
+    } else {
+      themeToggleBtn.style.display = "flex"
+    }
+  }
+}
+
+/**
+ * Close menu when a link is clicked (mobile)
+ */
+function closeMenu() {
+  const navMenu = document.getElementById("navMenu")
+  const hamburgerBtn = document.getElementById("hamburgerBtn")
+  const themeToggleBtn = document.getElementById("themeToggleBtn")
+  if (navMenu) {
+    navMenu.classList.remove("active")
+  }
+  if (hamburgerBtn) {
+    hamburgerBtn.classList.remove("active")
+  }
+  if (themeToggleBtn) {
+    // Make sure theme toggle button is visible when menu is closed
+    themeToggleBtn.style.display = "flex"
+  }
+}
 
 /**
  * Generate a unique ID
@@ -343,6 +386,22 @@ function isValidUrl(string) {
 document.addEventListener("DOMContentLoaded", () => {
   initializeStorage();
   initializeMealPlanStorage();
+
+  // Setup mobile menu close behavior
+  const navLinks = document.querySelectorAll(".nav-link");
+  navLinks.forEach(link => {
+    link.addEventListener("click", closeMenu);
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener("click", (e) => {
+    const navbar = document.querySelector(".navbar");
+    const hamburgerBtn = document.getElementById("hamburgerBtn");
+    const navMenu = document.getElementById("navMenu");
+    if (navbar && !navbar.contains(e.target) && navMenu && navMenu.classList.contains("active")) {
+      closeMenu();
+    }
+  });
 
   const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
