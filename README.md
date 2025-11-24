@@ -127,6 +127,8 @@ No installation, npm packages, or server setup required. Everything runs directl
 ### 🎯 Advanced Recipe Management
 - **Smart Search & Filtering** - Perform searches in real time by title/description with multiple filter options
 - **Nutrition Tracking** - All nutritional information for each recipe (counting calories, protein, carbs, fat)
+- **Print Recipe** - Easily print any recipe in a clean, formatted layout with a single click
+
 
 ### 📱 QR Code Integration
 - **Dynamic QR Generation** - Generate a scannable QR code for viewing the website on mobile
